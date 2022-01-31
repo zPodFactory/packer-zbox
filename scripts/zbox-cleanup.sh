@@ -7,7 +7,7 @@
 
 # Clean up
 echo '> Removing unnecessary packages...'
-apt-get remove -y linux-headers-$(uname -r) build-essential
+apt-get remove -y linux-headers-$(uname -r) build-essential make
 apt-get purge -y $(dpkg --list | grep '^rc' | awk '{print $2}')
 
 echo '> Removing package manager unused files'

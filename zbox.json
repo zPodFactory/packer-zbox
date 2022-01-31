@@ -79,8 +79,7 @@
       "environment_vars": ["DEBIAN_FRONTEND=noninteractive"],
       "scripts": [
         "scripts/zbox-update.sh",
-        "scripts/zbox-docker.sh",
-        "scripts/zbox-hashicorp.sh",
+        "scripts/zbox-apt.sh",
         "scripts/zbox-system.sh",
         "scripts/zbox-network.sh",
         "scripts/zbox-storage.sh",
@@ -89,6 +88,11 @@
         "scripts/zbox-vmware.sh",
         "scripts/zbox-cleanup.sh"
       ]
+    },
+    {
+      "destination": "$HOME/.poshthemes/zbox.omp.json",
+      "source": "files/zbox.omp.json",
+      "type": "file"
     }
   ]
 }

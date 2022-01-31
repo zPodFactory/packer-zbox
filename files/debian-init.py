@@ -9,7 +9,7 @@
 
 import subprocess
 from xml.dom.minidom import parseString
-
+from os import system
 
 def appliance_get_ovf_properties():
     """
@@ -61,8 +61,7 @@ iface eth0 inet static
     gateway {gateway}
     dns-nameservers {dns}
 EOF
-systemctl restart networking
-    """.format(
+""".format(
             ipaddress=properties['guestinfo.ipaddress'],
             netprefix=properties['guestinfo.netprefix'],
             gateway=properties['guestinfo.gateway'],
