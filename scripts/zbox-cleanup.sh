@@ -38,7 +38,7 @@ rm -f /var/lib/dhcp/*
 # really make certain that both the zeros and the file removal really sync; the
 # extra sleep 1 and sync shouldn't be necessary, but...)
 
-echo '> Zeroing device to make space...'
+echo '> Zeroing device to reduce resulting VMDK & OVA export...'
 dd if=/dev/zero of=/EMPTY bs=1M || true; sync; sleep 1; sync
 rm -f /EMPTY; sync; sleep 1; sync
 
