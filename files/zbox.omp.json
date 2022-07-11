@@ -99,9 +99,12 @@
           }
         },
         {
-          "type": "shell",
+          "type": "text",
           "style": "diamond",
           "trailing_diamond": "\uE0B4",
+	  "properties": { 
+	     "template": " {{ .HostName }}"
+	  },
           "invert_powerline": true,
           "foreground": "#ffffff",
           "background": "#33658A"
