@@ -16,8 +16,6 @@ sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/too
 echo 'alias ip="ip -c"' >> $HOME/.zshrc
 echo 'alias ll="exa -l"' >> $HOME/.zshrc
 echo 'alias la="exa -la"' >> $HOME/.zshrc
-echo 'alias bat="batcat"' >> $HOME/.zshrc
-echo 'alias c="batcat"' >> $HOME/.zshrc
 echo 'alias diff="colordiff"' >> $HOME/.zshrc
 
 usermod --shell /bin/zsh root
