@@ -21,7 +21,7 @@
       "<enter><wait>"
     ],
     "boot_wait": "10s",
-    "disk_size": 25600,
+    "disk_size": 51200,
     "disk_type_id": "zeroedthick",
     "format": "ovf",
     "headless": false,
