@@ -99,12 +99,12 @@
           }
         },
         {
-          "type": "text",
+          "type": "command",
           "style": "diamond",
           "trailing_diamond": "\uE0B4",
-	  "properties": { 
-	     "template": " {{ .HostName }}"
-	  },
+          "properties": {
+            "command": "hostname -f"
+          },
           "invert_powerline": true,
           "foreground": "#ffffff",
           "background": "#33658A"
@@ -122,11 +122,11 @@
           "foreground": "#F16363",
           "properties": {
             "template": "{{ .Code }}",
-	    "prefix": "",
-	    "postfix": ""
+            "prefix": "",
+            "postfix": ""
           }
         },
-      	{
+        {
           "type": "text",
           "style": "plain",
           "foreground": "#ffffff",
