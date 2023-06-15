@@ -23,8 +23,9 @@ apt-get install -y \
   bzip2 \
   dstat \
   unzip \
-  httpie
-
+  httpie \
+  colordiff
+  
 echo '> Installing duf...'
 # nice df alternative (duf): https://github.com/muesli/duf
 wget -q https://github.com/muesli/duf/releases/download/v0.8.1/duf_0.8.1_linux_amd64.deb -O /tmp/duf.deb
