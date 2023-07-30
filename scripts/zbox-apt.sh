@@ -1,7 +1,7 @@
 #!/bin/bash -eux
 
 ##
-## Debian 
+## Debian
 ## Setup all third party APT repositories
 ##
 
@@ -18,7 +18,7 @@ mkdir -m 0755 -p /etc/apt/keyrings
 
 ##
 ## Docker
-## 
+##
 
 curl -fsSL https://download.docker.com/linux/debian/gpg | gpg --dearmor -o /etc/apt/keyrings/docker.gpg
 
@@ -29,7 +29,7 @@ echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.
 
 ##
 ## Hashicorp
-## 
+##
 
 curl -fsSL https://apt.releases.hashicorp.com/gpg | gpg --dearmor -o /etc/apt/keyrings/hashicorp.gpg
 
@@ -38,8 +38,8 @@ echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/hashico
 | tee /etc/apt/sources.list.d/hashicorp.list
 
 ##
-## Kubernetes 
-## 
+## Kubernetes
+##
 
 curl -fsSL https://packages.cloud.google.com/apt/doc/apt-key.gpg | gpg --dearmor -o /etc/apt/keyrings/kubernetes.gpg
 
@@ -54,11 +54,13 @@ echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/kuberne
 curl -fsSL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor -o /etc/apt/keyrings/microsoft.gpg
 
 # Add microsoft official repository
-echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/microsoft.gpg] https://packages.microsoft.com/debian/11/prod $(lsb_release -cs) main" \
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/microsoft.gpg] https://packages.microsoft.com/repos/microsoft-debian-$(lsb_release -cs)-prod $(lsb_release -cs) main" \
 | tee /etc/apt/sources.list.d/microsoft.list
-
 
 # Update APT repository package list
 apt-get update
+
+
+
 
 echo '> Done'

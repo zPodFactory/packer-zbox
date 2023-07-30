@@ -16,12 +16,12 @@ apt-get install -y \
   rsync \
   ipcalc \
   telnet \
-  netcat \
   dnsmasq \
   mtr-tiny \
   wireguard \
   traceroute \
   speedometer \
-  bridge-utils
+  bridge-utils \
+  netcat-traditional
 
 echo '> Done'

@@ -5,6 +5,9 @@
 ## Cleaning VM before OVA Export
 ##
 
+df -h
+duf
+
 # Clean up
 echo '> Removing unnecessary packages...'
 apt-get remove -y linux-headers-$(uname -r) build-essential make
@@ -41,5 +44,8 @@ rm -f /var/lib/dhcp/*
 echo '> Zeroing device to reduce resulting VMDK & OVA export...'
 dd if=/dev/zero of=/EMPTY bs=1M || true; sync; sleep 1; sync
 rm -f /EMPTY; sync; sleep 1; sync
+
+df -h
+duf
 
 echo '> Done'
