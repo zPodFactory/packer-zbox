@@ -38,7 +38,11 @@ sed -i 's/robbyrussell/af-magic/g' $HOME/.zshrc
 echo '> zBox PoshTheme setup...'
 echo 'export XDG_CACHE_HOME=$HOME/.cache' >> $HOME/.zshrc
 mkdir -vp $HOME/.cache
-echo 'eval "$(oh-my-posh --init --shell zsh --config $HOME/.poshthemes/zbox.omp.json)"' >> $HOME/.zshrc
+
+# Only enable zbox theme on SSH, as it uses nerd fonts icons/symbols (https://www.nerdfonts.com).
+echo 'if [[ -n $SSH_CONNECTION ]]; then' >> $HOME/.zshrc
+echo '  eval "$(oh-my-posh --init --shell zsh --config $HOME/.poshthemes/zbox.omp.json)"' >> $HOME/.zshrc
+echo 'fi' >> $HOME/.zshrc
 
 echo '> Done'
 
