@@ -12,16 +12,13 @@
           "style": "diamond",
           "foreground": "#ffffff",
           "background": "#c44569",
-	  "leading_diamond": "\uE0B6",
-          "template": "{{ if .WSL }}WSL at {{ end }}{{ .Icon }} ",
-          "properties": {
-            "windows": "\ue62a"
-          }
+          "leading_diamond": "\ue0b6",
+          "template": "{{ if .WSL }}WSL at {{ end }}{{ .Icon }} "
         },
         {
           "type": "path",
-          "style": "powerline",
-	  "powerline_symbol": "\uE0B0",
+          "style": "diamond",
+          "trailing_diamond": "\ue0b0",
           "foreground": "#ffffff",
           "background": "#c44569",
           "template": "{{ .Path }} ",
@@ -100,7 +97,7 @@
           "foreground": "#ffffff",
           "background": "#33658A",
           "trailing_diamond": "\uE0B4",
-          "template": "{{ .Output }}",
+          "template": " {{ .Output }}",
           "properties": {
             "command": "hostname -f"
           }

@@ -94,6 +94,11 @@
       "destination": "$HOME/.poshthemes/zbox.omp.json",
       "source": "files/zbox.omp.json",
       "type": "file"
+    },
+    {
+      "destination": "$HOME/.tmux.conf",
+      "source": "files/tmux.conf",
+      "type": "file"
     }
   ]
 }
