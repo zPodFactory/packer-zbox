@@ -13,10 +13,15 @@ echo '> Removing unnecessary packages...'
 apt-get remove -y linux-headers-$(uname -r) build-essential make
 apt-get purge -y $(dpkg --list | grep '^rc' | awk '{print $2}')
 
+# Remove any remaining kernel from installation (~400MB)
+apt-get purge -y $(dpkg -l | egrep 'linux-image-[0-9]' | grep -v $(uname -r) | awk '{ print $2 }')
+
 echo '> Removing package manager unused files'
 apt-get autoremove -y
 apt-get clean -y
 apt-get autoclean -y
+
+
 
 echo '> Removing unused locales...'
 DEBIAN_FRONTEND=noninteractive apt-get -y install localepurge
