@@ -18,6 +18,8 @@ echo 'alias ll="exa -l"' >> $HOME/.zshrc
 echo 'alias la="exa -la"' >> $HOME/.zshrc
 echo 'alias diff="colordiff"' >> $HOME/.zshrc
 
+echo 'eval "$(direnv hook zsh)"' >> $HOME/.zshrc
+
 usermod --shell /bin/zsh root
 
 echo '> Installing oh-my-posh...'

@@ -26,6 +26,7 @@ apt-get install -y \
   bzip2 \
   dstat \
   unzip \
+  direnv \
   httpie \
   colordiff \
   colortail \
