@@ -37,6 +37,8 @@
     "remote_username": "{{ user `builder_host_username` }}",
     "shutdown_command": "/sbin/shutdown -Ph now",
     "shutdown_timeout": "10s",
+    "insecure_connection": true,
+    "vnc_over_websocket": true,
     "skip_compaction": true,
     "ssh_password": "{{ user `guest_password` }}",
     "ssh_port": 22,
