@@ -24,4 +24,7 @@ apt-get install -y \
   bridge-utils \
   netcat-traditional
 
+# Disable FRR service
+systemctl disable frr
+
 echo '> Done'

@@ -5,6 +5,16 @@
 ## Cleaning VM before OVA Export
 ##
 
+# Disable eth0 configuration for firstboot
+cat << EOF > /etc/network/interfaces
+# This file describes the network interfaces available on your system
+# and how to activate them. For more information, see interfaces(5).
+
+# The loopback network interface
+auto lo
+iface lo inet loopback
+EOF
+
 df -h
 duf
 
