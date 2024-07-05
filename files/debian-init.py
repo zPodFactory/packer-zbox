@@ -2,32 +2,35 @@
 # -*- coding: utf-8 -*-
 
 """
-    Debian Init script
-    Based on https://vuptime.io/2017/03/06/vmware-dive-into-ovf-properties/
-    (password & initial python code for ovfenv properties)
+Debian Init script
+Based on https://vuptime.io/2017/03/06/vmware-dive-into-ovf-properties/
+(password & initial python code for ovfenv properties)
 """
 
 import subprocess
 from xml.dom.minidom import parseString
 from os import system
 
+
 def appliance_get_ovf_properties():
     """
-        Return a dict of OVF properties in the ovfenv
+    Return a dict of OVF properties in the ovfenv
     """
     ovfenv_cmd = "/usr/bin/vmtoolsd --cmd 'info-get guestinfo.ovfEnv'"
 
     properties = {}
-    xml_parts = subprocess.Popen(ovfenv_cmd, shell=True, stdout=subprocess.PIPE).stdout.read()
+    xml_parts = subprocess.Popen(
+        ovfenv_cmd, shell=True, stdout=subprocess.PIPE
+    ).stdout.read()
     raw_data = parseString(xml_parts)
 
     # [0] as we have all the ovfenv sections from the vApp & VMs
     appliancePropertySection = raw_data.getElementsByTagName("PropertySection")[0]
 
-    for property in appliancePropertySection.getElementsByTagName('Property'):
+    for property in appliancePropertySection.getElementsByTagName("Property"):
         key, value = [
-            property.attributes['oe:key'].value,
-            property.attributes['oe:value'].value
+            property.attributes["oe:key"].value,
+            property.attributes["oe:value"].value,
         ]
         properties[key] = value
     return properties
@@ -35,16 +38,16 @@ def appliance_get_ovf_properties():
 
 def appliance_create_network_config(properties):
     """
-        Create debian /etc/network/interfaces file & restart networking.
-        if properties['guestinfo.ipaddress'] exists, setup static network
-            -> This assumes all the other ovf variables are correct
-        else
-            -> This assumes this VM will leverage DHCP
+    Create debian /etc/network/interfaces file & restart networking.
+    if properties['guestinfo.ipaddress'] exists, setup static network
+        -> This assumes all the other ovf variables are correct
+    else
+        -> This assumes this VM will leverage DHCP
     """
 
-    if properties['guestinfo.ipaddress']:
-
-        network_cmd = """cat << EOF > /etc/network/interfaces
+    if properties["guestinfo.ipaddress"]:
+        network_cmd = """systemctl stop networking
+cat << EOF > /etc/network/interfaces
 # This file describes the network interfaces available on your system
 # and how to activate them. For more information, see interfaces(5).
 
@@ -61,11 +64,12 @@ iface eth0 inet static
     gateway {gateway}
     dns-nameservers {dns}
 EOF
+systemctl start networking
 """.format(
-            ipaddress=properties['guestinfo.ipaddress'],
-            netprefix=properties['guestinfo.netprefix'],
-            gateway=properties['guestinfo.gateway'],
-            dns=properties['guestinfo.dns']
+            ipaddress=properties["guestinfo.ipaddress"],
+            netprefix=properties["guestinfo.netprefix"],
+            gateway=properties["guestinfo.gateway"],
+            dns=properties["guestinfo.dns"],
         )
 
         subprocess.Popen(network_cmd, shell=True, stdout=subprocess.PIPE).stdout.read()
@@ -76,10 +80,11 @@ def appliance_create_hostfile_config(properties):
     Create debian /etc/hosts file for dnsmasq expand-hosts directive.
     """
 
-    if properties['guestinfo.hostname'] and \
-       properties['guestinfo.ipaddress'] and \
-       properties['guestinfo.domain']:
-
+    if (
+        properties["guestinfo.hostname"]
+        and properties["guestinfo.ipaddress"]
+        and properties["guestinfo.domain"]
+    ):
         hostfile_cmd = """cat << EOF > /etc/hosts
 127.0.0.1       localhost
 {ipaddress}     {hostname}.{domain}    {hostname}
@@ -87,9 +92,9 @@ def appliance_create_hostfile_config(properties):
 EOF
 hostnamectl set-hostname {hostname}
         """.format(
-            hostname=properties['guestinfo.hostname'],
-            ipaddress=properties['guestinfo.ipaddress'],
-            domain=properties['guestinfo.domain']
+            hostname=properties["guestinfo.hostname"],
+            ipaddress=properties["guestinfo.ipaddress"],
+            domain=properties["guestinfo.domain"],
         )
 
         subprocess.Popen(hostfile_cmd, shell=True, stdout=subprocess.PIPE).stdout.read()
@@ -97,16 +102,21 @@ hostnamectl set-hostname {hostname}
 
 def appliance_update_credentials(properties):
     """
-        Update Appliance root password & SSH KEY
+    Update Appliance root password & SSH KEY
     """
 
-    if properties['guestinfo.password']:
-        password_cmd = """echo root:{password} | chpasswd""".format(password=properties['guestinfo.password'])
+    if properties["guestinfo.password"]:
+        password_cmd = """echo root:{password} | chpasswd""".format(
+            password=properties["guestinfo.password"]
+        )
         subprocess.Popen(password_cmd, shell=True, stdout=subprocess.PIPE).stdout.read()
 
-    if properties['guestinfo.sshkey']:
-        sshkey_cmd = """echo '{sshkey}' >> /root/.ssh/authorized_keys""".format(sshkey=properties['guestinfo.sshkey'])
+    if properties["guestinfo.sshkey"]:
+        sshkey_cmd = """echo '{sshkey}' >> /root/.ssh/authorized_keys""".format(
+            sshkey=properties["guestinfo.sshkey"]
+        )
         subprocess.Popen(sshkey_cmd, shell=True, stdout=subprocess.PIPE).stdout.read()
+
 
 # Appliance configuration flow.
 # Fetch properties from OVF Environment

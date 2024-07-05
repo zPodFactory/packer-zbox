@@ -45,7 +45,6 @@ cat << EOF > /etc/rc.local
 if [ ! -f /etc/zbox.config ]; then
     /sbin/debian-init.py
     echo "\$(date)" > /etc/zbox.config
-    reboot
 fi
 
 exit 0
