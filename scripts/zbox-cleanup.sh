@@ -15,7 +15,6 @@ auto lo
 iface lo inet loopback
 EOF
 
-df -h
 duf
 
 # Clean up
@@ -60,7 +59,6 @@ echo '> Zeroing device to reduce resulting VMDK & OVA export...'
 dd if=/dev/zero of=/EMPTY bs=1M || true; sync; sleep 1; sync
 rm -f /EMPTY; sync; sleep 1; sync
 
-df -h
 duf
 
 echo '> Done'
