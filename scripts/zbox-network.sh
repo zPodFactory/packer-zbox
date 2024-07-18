@@ -17,6 +17,7 @@ apt-get install -y \
   ipcalc \
   telnet \
   dnsmasq \
+  tcpdump \
   mtr-tiny \
   wireguard \
   traceroute \
@@ -26,5 +27,8 @@ apt-get install -y \
 
 # Disable FRR service
 systemctl disable frr
+
+# Install Doggo fancy DNS Client (json output possible, great with jq)
+curl -sS https://raw.githubusercontent.com/mr-karan/doggo/main/install.sh | /bin/sh
 
 echo '> Done'
