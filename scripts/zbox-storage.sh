@@ -8,7 +8,7 @@
 echo '> Installing Storage utilities...'
 
 apt-get install -y \
-  lftp \
+  ncftp \
   pure-ftpd \
   nfs-kernel-server
 
