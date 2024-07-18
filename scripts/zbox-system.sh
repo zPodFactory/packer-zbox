@@ -18,6 +18,7 @@ apt-get install -y \
   man \
   vim \
   btop \
+  file \
   htop \
   make \
   ccze \
