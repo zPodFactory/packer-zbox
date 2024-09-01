@@ -20,6 +20,7 @@ apt-get install -y \
   btop \
   file \
   htop \
+  lnav \
   make \
   ccze \
   tree \

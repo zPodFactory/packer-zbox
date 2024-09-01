@@ -18,6 +18,7 @@ Latest 12.x builds are available here:
 
 - https://cloud.tsugliani.fr/ova/zbox-12.5.ova
 - https://cloud.tsugliani.fr/ova/zbox-12.6.ova
+- https://cloud.tsugliani.fr/ova/zbox-12.7.ova
 
 
 ## Screenshot

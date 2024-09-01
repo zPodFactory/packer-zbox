@@ -36,6 +36,15 @@ rm -vf $HOME/.poshthemes/themes.zip
 # Set "af-magic" Console theme
 sed -i 's/robbyrussell/af-magic/g' $HOME/.zshrc
 
+
+# Add Zoxide (cd replacement)
+curl -sSfL https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | zsh -s -- --bin-dir=/usr/local/bin --man-dir=/usr/local/share/man
+echo 'eval "$(zoxide init zsh)"' >> $HOME/.zshrc
+
+# Add Atuin for history (https://docs.atuin.sh/guide/installation/)
+curl --proto '=https' --tlsv1.2 -LsSf https://setup.atuin.sh | sh
+
+
 # Set Fancy theme (SSH / Nerd Fonts)
 echo '> zBox PoshTheme setup...'
 echo 'export XDG_CACHE_HOME=$HOME/.cache' >> $HOME/.zshrc
