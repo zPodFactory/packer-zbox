@@ -11,6 +11,7 @@ My personal all-in-one VM for testing & developement
 - LVM2 based storage configuration
 - Various misc tools
 
+Easily deploy the appliance using the provided OVF Properties
 
 ## Repository
 
@@ -19,6 +20,7 @@ Latest 12.x builds are available here:
 - https://cloud.tsugliani.fr/ova/zbox-12.5.ova
 - https://cloud.tsugliani.fr/ova/zbox-12.6.ova
 - https://cloud.tsugliani.fr/ova/zbox-12.7.ova
+- https://cloud.tsugliani.fr/ova/zbox-12.8.ova
 
 
 ## Screenshot

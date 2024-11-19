@@ -44,6 +44,8 @@ echo 'eval "$(zoxide init zsh)"' >> $HOME/.zshrc
 # Add Atuin for history (https://docs.atuin.sh/guide/installation/)
 curl --proto '=https' --tlsv1.2 -LsSf https://setup.atuin.sh | sh
 
+# Disable up arrow history search
+sed -i 's/atuin init zsh/atuin init zsh --disable-up-arrow/g' $HOME/.zshrc
 
 # Set Fancy theme (SSH / Nerd Fonts)
 echo '> zBox PoshTheme setup...'
