@@ -31,7 +31,6 @@ apt-get clean -y
 apt-get autoclean -y
 
 
-
 echo '> Removing unused locales...'
 DEBIAN_FRONTEND=noninteractive apt-get -y install localepurge
 sed -i -e 's|^USE_DPKG|#USE_DPKG|' /etc/locale.nopurge

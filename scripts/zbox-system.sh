@@ -12,6 +12,7 @@ apt-get install -y \
   bat \
   duf \
   exa \
+  eza \
   fzf \
   git \
   lsd \
@@ -33,5 +34,11 @@ apt-get install -y \
   colordiff \
   colortail \
   syslog-ng
+
+#
+# Install lazydocker
+#
+curl https://raw.githubusercontent.com/jesseduffield/lazydocker/master/scripts/install_update_linux.sh | bash
+mv $HOME/.local/bin/lazydocker /usr/local/bin
 
 echo '> Done'

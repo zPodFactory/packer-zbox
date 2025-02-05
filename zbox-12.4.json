@@ -4,7 +4,6 @@
     "website": "https://github.com/zPodFactory",
     "description": "zBox Appliance",
     "vm_name": "zbox-12.4",
-    "guest_os_type": "debian10-64",
     "hostname": "zbox",
     "numvcpus": "2",
     "ramsize": "4096",

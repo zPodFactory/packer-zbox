@@ -9,7 +9,6 @@
 echo '> Installing Network utilities...'
 
 apt-get install -y \
-  frr \
   ntp \
   curl \
   wget \
@@ -25,10 +24,7 @@ apt-get install -y \
   bridge-utils \
   netcat-traditional
 
-# Disable FRR service
-systemctl disable frr
-
 # Install Doggo fancy DNS Client (json output possible, great with jq)
-curl -sS https://raw.githubusercontent.com/mr-karan/doggo/main/install.sh | /bin/sh
+curl -sS https://raw.githubusercontent.com/mr-karan/doggo/main/install.sh | /bin/sh && chown root:root /usr/local/bin/doggo
 
 echo '> Done'

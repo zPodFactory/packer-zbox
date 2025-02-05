@@ -54,8 +54,8 @@ mkdir -vp $HOME/.cache
 
 # Only enable zbox theme on SSH, as it uses nerd fonts icons/symbols (https://www.nerdfonts.com).
 echo 'if [[ -n $SSH_CONNECTION ]]; then' >> $HOME/.zshrc
-echo '  alias ll="lsd -l"'  >> $HOME/.zshrc
-echo '  alias la="lsd -la"'  >> $HOME/.zshrc
+echo '  alias ll="eza -ll --group-directories-first --icons \$eza_params"'  >> $HOME/.zshrc
+echo '  alias la="eza -la --group-directories-first --icons \$eza_params"'  >> $HOME/.zshrc
 echo '  eval "$(oh-my-posh --init --shell zsh --config $HOME/.poshthemes/zbox.omp.json)"' >> $HOME/.zshrc
 echo 'fi' >> $HOME/.zshrc
 
