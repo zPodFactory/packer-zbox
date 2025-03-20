@@ -1,0 +1,2 @@
+# Ignore builder configuration file containing sensitive information
+zbox-builder.json

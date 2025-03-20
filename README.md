@@ -2,6 +2,22 @@
 
 Based on Debian GNU Linux
 
+
+## Packer setup
+
+Set your `zbox-builder.json` file with the correct parameters from the provided example file.
+
+```bash
+cp zbox-builder.json.example zbox-builder.json
+```
+
+Edit the required values in the `zbox-builder.json` file to reflect your builder environment.
+
+```bash
+vi zbox-builder.json
+```
+
+
 ## Purpose
 
 My personal all-in-one VM for testing & developement
@@ -19,6 +35,8 @@ Latest 12.x builds are available here:
 
 - https://cloud.tsugliani.fr/ova/zbox-12.8.ova
 - https://cloud.tsugliani.fr/ova/zbox-12.9.ova
+- https://cloud.tsugliani.fr/ova/zbox-12.10.ova
+
 
 ## Screenshot
 

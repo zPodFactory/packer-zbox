@@ -41,4 +41,9 @@ apt-get install -y \
 curl https://raw.githubusercontent.com/jesseduffield/lazydocker/master/scripts/install_update_linux.sh | bash
 mv $HOME/.local/bin/lazydocker /usr/local/bin
 
+#
+# Install fx (JSON tool)
+#
+curl https://fx.wtf/install.sh | sh
+
 echo '> Done'
