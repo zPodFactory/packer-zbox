@@ -8,7 +8,7 @@ Based on Debian GNU Linux
 Set your `zbox-builder.json` file with the correct parameters from the provided example file.
 
 ```bash
-cp zbox-builder.json.example zbox-builder.json
+cp zbox-builder.json.sample zbox-builder.json
 ```
 
 Edit the required values in the `zbox-builder.json` file to reflect your builder environment.
