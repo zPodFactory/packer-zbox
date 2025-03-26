@@ -3,6 +3,6 @@
 rm -rf output-zbox-*
 
 packer build \
-    --var-file="zbox-builder.json" \
-    --var-file="zbox-12.10.json" \
-    zbox.json
+    --var-file="zbox-builder.pkrvars.hcl" \
+    --var-file="zbox-12.10.pkrvars.hcl" \
+    zbox.pkr.hcl
