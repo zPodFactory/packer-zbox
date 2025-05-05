@@ -1,2 +1,2 @@
 # Ignore builder configuration file containing sensitive information
-zbox-builder.json
+zbox-builder.pkr.hcl
