@@ -33,9 +33,8 @@ Easily deploy the appliance using the provided OVF Properties
 
 Latest 12.x builds are available here:
 
-- https://cloud.tsugliani.fr/ova/zbox-12.8.ova
-- https://cloud.tsugliani.fr/ova/zbox-12.9.ova
 - https://cloud.tsugliani.fr/ova/zbox-12.10.ova
+- https://cloud.tsugliani.fr/ova/zbox-12.11.ova
 
 
 ## Screenshot
