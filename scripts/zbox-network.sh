@@ -37,6 +37,6 @@ wget -qO /usr/local/bin/wakey https://github.com/jonathanruiz/wakey/releases/lat
 # Install nping
 # https://github.com/hanshuaikang/Nping
 #
-curl -L https://github.com/hanshuaikang/Nping/releases/download/v0.4.0/nping-x86_64-unknown-linux-gnu.tar.gz | tar -xz && install -m 755 nping /usr/local/bin/nping
+curl -L https://github.com/hanshuaikang/Nping/releases/download/v0.4.0/nping-x86_64-unknown-linux-gnu.tar.gz | tar -xz && install -m 755 nping /usr/local/bin/nping && rm nping
 
 echo '> Done'

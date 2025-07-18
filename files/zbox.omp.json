@@ -8,23 +8,10 @@
         {
           "properties": {
             "cache_duration": "none",
-            "windows": "\ue62a"
-          },
-          "leading_diamond": "\ue0b6",
-          "template": "{{ if .WSL }}WSL at {{ end }}{{.Icon}}",
-          "foreground": "#ffffff",
-          "background": "#c44569",
-          "type": "os",
-          "style": "diamond"
-        },
-        {
-          "properties": {
-            "cache_duration": "none",
             "style": "full"
           },
-          "template": "{{ .Path }} ",
+          "template": "<#c44569>█</><#ffffff>■</> {{ .Path }} ",
           "foreground": "#ffffff",
-          "powerline_symbol": "\ue0b0",
           "background": "#c44569",
           "type": "path",
           "style": "powerline"
@@ -60,7 +47,6 @@
           },
           "template": " {{ .UpstreamIcon }} {{ .HEAD }}{{ if .Staging.Changed }} \uf046 {{ .Staging.String }}{{ end }}{{ if and (.Working.Changed) (.Staging.Changed) }} |{{ end }}{{ if .Working.Changed }} \uf044 {{ .Working.String }}{{ end }} ",
           "foreground": "#ffffff",
-          "powerline_symbol": "\ue0b0",
           "background": "#c4a1a1",
           "type": "git",
           "style": "powerline",
@@ -84,7 +70,6 @@
           },
           "template": " {{ .FormattedMs }} ",
           "foreground": "#ffffff",
-          "powerline_symbol": "\ue0b2",
           "background": "#83769c",
           "type": "executiontime",
           "style": "powerline",
@@ -96,7 +81,6 @@
           },
           "template": " {{ .UserName }} ",
           "foreground": "#ffffff",
-          "powerline_symbol": "\ue0b2",
           "background": "#86BBD8",
           "type": "session",
           "style": "powerline",
@@ -107,7 +91,6 @@
             "cache_duration": "none",
             "command": "hostname -f"
           },
-          "trailing_diamond": "\ue0b4",
           "foreground": "#ffffff",
           "background": "#33658A",
           "type": "command",
@@ -124,20 +107,25 @@
           "properties": {
             "cache_duration": "none"
           },
-          "template": "{{ .Code }}",
+          "template": "<#c44569>█▓░</> ",
+          "foreground": "#ffffff",
+          "type": "text",
+          "style": "plain"
+        },
+	{
+          "properties": {
+            "cache_duration": "none"
+          },
+          "template": "{{ if eq .Code 0 }}\uf00c{{ else }}\uf071 {{.Code}}{{ end }}",
           "foreground": "#F16363",
           "type": "exit",
           "style": "plain"
         },
-        {
-          "properties": {
-            "cache_duration": "none"
-          },
-          "template": "<#ffffff>❯</>",
-          "foreground": "#ffffff",
-          "type": "text",
-          "style": "plain"
-        }
+	{
+		"template": "❱",
+		"type": "text",
+		"style": "plain"
+	}
       ],
       "newline": true
     }
