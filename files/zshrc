@@ -1,0 +1,53 @@
+# If you come from bash you might have to change your $PATH.
+# export PATH=$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH
+
+# Performance optimizations
+DISABLE_AUTO_UPDATE="true"
+DISABLE_MAGIC_FUNCTIONS="true"
+DISABLE_COMPFIX="true"
+
+# Cache completions aggressively
+autoload -Uz compinit
+if [ "$(date +'%j')" != "$(stat -f '%Sm' -t '%j' ~/.zcompdump 2>/dev/null)" ]; then
+    compinit
+else
+    compinit -C
+fi
+
+# Path to your Oh My Zsh installation.
+export ZSH="$HOME/.oh-my-zsh"
+export XDG_CACHE_HOME=$HOME/.cache
+
+# Theme that will be used in the console (when not going through SSH)
+# it's to avoid the nerd-fonts symbols in the prompt
+ZSH_THEME="af-magic"
+
+plugins=(
+  git
+  zsh-autosuggestions
+  zsh-syntax-highlighting
+)
+
+# Load Oh My Zsh
+source $ZSH/oh-my-zsh.sh
+
+# Modify some aliases to use our subjectively better tools
+alias c="batcat"
+alias cd="z"
+alias ip="ip -c"
+alias ll="exa -l"
+alias la="exa -la"
+alias diff="colordiff"
+
+# Some fancy stuff
+eval "$(direnv hook zsh)"
+eval "$(zoxide init zsh)"
+eval "$(atuin init zsh --disable-up-arrow)"
+
+# Load fancy prompt if on SSH/nerd-fonts for symbols
+if [[ -n $SSH_CONNECTION ]]; then
+  alias ll="eza -ll --group-directories-first --icons \$eza_params"
+  alias la="eza -la --group-directories-first --icons \$eza_params"
+  # Load fancy prompt if on SSH/nerd-fonts for symbols
+  eval "$(oh-my-posh --init --shell zsh --config $HOME/.poshthemes/zbox.omp.json)"
+fi

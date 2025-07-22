@@ -10,54 +10,44 @@ echo '> Installing zBox Shell...'
 apt-get install -y \
   zsh
 
+usermod --shell /bin/zsh root
+
 echo '> Installing oh-my-zsh...'
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
-
-echo 'alias ip="ip -c"' >> $HOME/.zshrc
-echo 'alias ll="exa -l"' >> $HOME/.zshrc
-echo 'alias la="exa -la"' >> $HOME/.zshrc
-echo 'alias diff="colordiff"' >> $HOME/.zshrc
-
-echo 'eval "$(direnv hook zsh)"' >> $HOME/.zshrc
-
-usermod --shell /bin/zsh root
 
 echo '> Installing oh-my-posh...'
 wget -q https://github.com/JanDeDobbeleer/oh-my-posh/releases/latest/download/posh-linux-amd64 -O /usr/local/bin/oh-my-posh
 chmod +x /usr/local/bin/oh-my-posh
 
 echo '> Installing posh themes...'
-mkdir $HOME/.poshthemes
+mkdir -vp $HOME/.poshthemes
+mkdir -vp $HOME/.cache
+
 wget -q https://github.com/JanDeDobbeleer/oh-my-posh/releases/latest/download/themes.zip -O $HOME/.poshthemes/themes.zip
 unzip $HOME/.poshthemes/themes.zip -d $HOME/.poshthemes
 chmod u+rw $HOME/.poshthemes/*.json
 rm -vf $HOME/.poshthemes/themes.zip
 
-# Set "af-magic" Console theme
-sed -i 's/robbyrussell/af-magic/g' $HOME/.zshrc
+
+# Set some zshplugins
+git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
+git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
+
+
+# tmux tpm/plugins/catppuccin theme
+mkdir -p ~/.config/tmux/plugins/catppuccin
+git clone -b v2.1.3 https://github.com/catppuccin/tmux.git ~/.config/tmux/plugins/catppuccin/tmux
+git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 
 
 # Add Zoxide (cd replacement)
 curl -sSfL https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | zsh -s -- --bin-dir=/usr/local/bin --man-dir=/usr/local/share/man
-echo 'eval "$(zoxide init zsh)"' >> $HOME/.zshrc
 
 # Add Atuin for history (https://docs.atuin.sh/guide/installation/)
 curl --proto '=https' --tlsv1.2 -LsSf https://setup.atuin.sh | sh
 
-# Disable up arrow history search
-sed -i 's/atuin init zsh/atuin init zsh --disable-up-arrow/g' $HOME/.zshrc
+echo '. "$HOME/.atuin/bin/env"' >> $HOME/.zshenv
 
-# Set Fancy theme (SSH / Nerd Fonts)
-echo '> zBox PoshTheme setup...'
-echo 'export XDG_CACHE_HOME=$HOME/.cache' >> $HOME/.zshrc
-mkdir -vp $HOME/.cache
-
-# Only enable zbox theme on SSH, as it uses nerd fonts icons/symbols (https://www.nerdfonts.com).
-echo 'if [[ -n $SSH_CONNECTION ]]; then' >> $HOME/.zshrc
-echo '  alias ll="eza -ll --group-directories-first --icons \$eza_params"'  >> $HOME/.zshrc
-echo '  alias la="eza -la --group-directories-first --icons \$eza_params"'  >> $HOME/.zshrc
-echo '  eval "$(oh-my-posh --init --shell zsh --config $HOME/.poshthemes/zbox.omp.json)"' >> $HOME/.zshrc
-echo 'fi' >> $HOME/.zshrc
 
 echo '> Done'
 

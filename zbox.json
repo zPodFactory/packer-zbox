@@ -101,6 +101,11 @@
       "destination": "$HOME/.tmux.conf",
       "source": "files/tmux.conf",
       "type": "file"
+    },
+    {
+      "destination": "$HOME/.zshrc",
+      "source": "files/zshrc",
+      "type": "file"
     }
   ]
 }
