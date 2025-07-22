@@ -72,9 +72,10 @@
     ],
     "type": "shell-local"
   }],
-  "provisioners": [{
-      "destination": "/sbin/debian-init.py",
-      "source": "files/debian-init.py",
+  "provisioners": [
+    {
+      "destination": "/sbin/zbox-init.sh",
+      "source": "files/zbox-init.sh",
       "type": "file"
     },
     {

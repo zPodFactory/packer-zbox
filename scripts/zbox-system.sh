@@ -36,24 +36,9 @@ apt-get install -y \
   syslog-ng
 
 #
-# Install lazydocker
-# https://github.com/jesseduffield/lazydocker
-#
-curl https://raw.githubusercontent.com/jesseduffield/lazydocker/master/scripts/install_update_linux.sh | bash
-mv $HOME/.local/bin/lazydocker /usr/local/bin
-
-#
 # Install fx (JSON tool)
 # https://github.com/antonmedv/fx
 #
 curl https://fx.wtf/install.sh | sh
-
-#
-# Install ssm (ssh connection manager)
-# https://github.com/lfaoro/ssm?tab=readme-ov-file
-#
-wget -qO- https://github.com/lfaoro/ssm/raw/main/scripts/get.sh | bash
-chown root:root /usr/local/bin/ssm
-
 
 echo '> Done'

@@ -43,8 +43,7 @@ cat << EOF > /etc/rc.local
 # By default this script does nothing.
 
 if [ ! -f /etc/zbox.config ]; then
-    /sbin/debian-init.py
-    echo "\$(date)" > /etc/zbox.config
+    /sbin/zbox-init.sh
 fi
 
 exit 0

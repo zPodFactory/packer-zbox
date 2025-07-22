@@ -10,8 +10,6 @@ echo '> Installing Network utilities...'
 
 apt-get install -y \
   ntp \
-  curl \
-  wget \
   rsync \
   ipcalc \
   telnet \

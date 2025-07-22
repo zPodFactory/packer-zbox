@@ -1,7 +1,7 @@
 # zBox appliance
 
 Based on Debian GNU Linux
-
+Opiniated Linux Appliance setup for my personal use.
 
 ## Packer setup
 
