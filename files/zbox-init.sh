@@ -26,7 +26,7 @@ log() {
 
     echo "$message"
     # Append the timestamp and message to the CONFIG_FILE
-    echo "[$timestamp] $message" >>$ZBOX_CONFIG_FILE
+    echo "[$timestamp] $message" >> $ZBOX_CONFIG_FILE
 }
 
 # Function to apply OVF settings
@@ -225,8 +225,6 @@ main() {
     appliance_config_storage
     appliance_config_credentials
 
-    # Mark the setup as complete by creating the configuration file
-    touch "$ZBOX_CONFIG_FILE"
     echo "Setup complete. Configuration file created at $ZBOX_CONFIG_FILE."
 }
 
