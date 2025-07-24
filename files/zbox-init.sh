@@ -1,5 +1,10 @@
 #!/bin/zsh
 
+# Path to the temporary OVF environment file
+ZBOX_OVFENV_FILE="/tmp/ovfenv.xml"
+# Path to the configuration file
+ZBOX_CONFIG_FILE="/etc/zbox.config"
+
 # Parse command line arguments
 EXTEND_DISK_MODE=false
 while [[ $# -gt 0 ]]; do
@@ -16,9 +21,6 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
-ZBOX_OVFENV_FILE="/tmp/ovfenv.xml"
-# Path to the configuration file
-ZBOX_CONFIG_FILE="/etc/zbox.config"
 
 log() {
     local message="$1"                           # The message to log
@@ -26,16 +28,17 @@ log() {
 
     echo "$message"
     # Append the timestamp and message to the CONFIG_FILE
-    echo "[$timestamp] $message" >> $ZBOX_CONFIG_FILE
+    echo "[$timestamp] $message" >>$ZBOX_CONFIG_FILE
 }
 
-# Function to apply OVF settings
+
+# Function to fetch OVF settings
 appliance_config_ovf_settings() {
-    log "Applying OVF settings..."
+    log "Fetching OVF settings..."
     # Get OVF environment and save to file
     vmtoolsd --cmd 'info-get guestinfo.ovfEnv' >$ZBOX_OVFENV_FILE
 
-    # Parse OVF properties using sed (similar to zpodfactory.sh approach)
+    # Parse OVF properties using sed
     OVF_HOSTNAME=$(sed -n 's/.*Property oe:key="guestinfo.hostname" oe:value="\([^"]*\).*/\1/p' $ZBOX_OVFENV_FILE)
     OVF_DNS=$(sed -n 's/.*Property oe:key="guestinfo.dns" oe:value="\([^"]*\).*/\1/p' $ZBOX_OVFENV_FILE)
     OVF_DOMAIN=$(sed -n 's/.*Property oe:key="guestinfo.domain" oe:value="\([^"]*\).*/\1/p' $ZBOX_OVFENV_FILE)
@@ -55,9 +58,10 @@ appliance_config_ovf_settings() {
     log "=================================="
 }
 
+
 # Function to configure the network
 appliance_config_network() {
-    log "Configuring the network..."
+    log "Configuring network..."
 
     # Stop networking service first
     systemctl stop networking
@@ -105,9 +109,10 @@ EOF
     log "Networking configured and restarted."
 }
 
+
 # Function to configure the host
 appliance_config_host() {
-    log "Configuring the hostname..."
+    log "Configuring hostname..."
 
     # Set the hostname
     hostnamectl set-hostname $OVF_HOSTNAME
@@ -123,6 +128,7 @@ EOF
         log "Warning: Missing hostname, IP address, or domain for /etc/hosts configuration."
     fi
 }
+
 
 # Function to configure storage
 appliance_config_storage() {
@@ -180,6 +186,7 @@ appliance_config_storage() {
     duf -only local
 }
 
+
 # Function to configure credentials
 appliance_config_credentials() {
     log "Configuring credentials..."
@@ -192,17 +199,14 @@ appliance_config_credentials() {
         log "Warning: No password provided in OVF properties."
     fi
 
-    # Update SSH key
+    # Add SSH key
     if [[ -n "$OVF_SSHKEY" ]]; then
-        # Ensure .ssh directory exists
-        mkdir -p /root/.ssh
         echo "$OVF_SSHKEY" >> /root/.ssh/authorized_keys
         log "SSH key added to authorized_keys."
     else
         log "Warning: No SSH key provided in OVF properties."
     fi
 }
-
 
 
 # Main execution logic
@@ -225,7 +229,13 @@ main() {
     appliance_config_storage
     appliance_config_credentials
 
-    echo "Setup complete. Configuration file created at $ZBOX_CONFIG_FILE."
+    # Clean up temporary files
+    if [[ -f "$ZBOX_OVFENV_FILE" ]]; then
+        rm -vf "$ZBOX_OVFENV_FILE"
+        log "Cleaned up temporary OVF environment file."
+    fi
+
+    echo "zBox Setup complete"
 }
 
 # Invoke the main function

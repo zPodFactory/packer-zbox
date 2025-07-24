@@ -15,7 +15,7 @@ auto lo
 iface lo inet loopback
 EOF
 
-duf
+duf --only local
 
 # Clean up
 echo '> Removing unnecessary packages...'
@@ -55,9 +55,9 @@ rm -f /var/lib/dhcp/*
 # extra sleep 1 and sync shouldn't be necessary, but...)
 
 echo '> Zeroing device to reduce resulting VMDK & OVA export...'
-dd if=/dev/zero of=/EMPTY bs=1M || true; sync; sleep 1; sync
+dd if=/dev/zero of=/EMPTY bs=16M || true; sync; sleep 1; sync
 rm -f /EMPTY; sync; sleep 1; sync
 
-duf
+duf --only local
 
 echo '> Done'
