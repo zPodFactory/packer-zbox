@@ -4,5 +4,5 @@ rm -rf output-zbox-*
 
 packer build \
     --var-file="zbox-builder.json" \
-    --var-file="zbox-12.11.json" \
+    --var-file="zbox-13.0.json" \
     zbox.json

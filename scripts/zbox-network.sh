@@ -9,12 +9,12 @@
 echo '> Installing Network utilities...'
 
 apt-get install -y \
-  ntp \
   rsync \
   ipcalc \
   telnet \
   dnsmasq \
   tcpdump \
+  openntpd \
   mtr-tiny \
   wireguard \
   traceroute \

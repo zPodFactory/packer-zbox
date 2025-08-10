@@ -11,7 +11,6 @@ apt-get install -y \
   jq \
   bat \
   duf \
-  exa \
   eza \
   fzf \
   git \
