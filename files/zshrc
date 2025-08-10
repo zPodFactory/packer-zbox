@@ -35,8 +35,6 @@ source $ZSH/oh-my-zsh.sh
 alias c="batcat"
 alias cd="z"
 alias ip="ip -c"
-alias ll="exa -l"
-alias la="exa -la"
 alias diff="colordiff"
 
 # Some fancy stuff
