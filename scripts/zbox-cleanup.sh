@@ -15,7 +15,7 @@ auto lo
 iface lo inet loopback
 EOF
 
-duf --only local
+duf -only local
 
 # Clean up
 echo '> Removing unnecessary packages...'
@@ -58,6 +58,6 @@ echo '> Zeroing device to reduce resulting VMDK & OVA export...'
 dd if=/dev/zero of=/EMPTY bs=16M || true; sync; sleep 1; sync
 rm -f /EMPTY; sync; sleep 1; sync
 
-duf --only local
+duf -only local
 
 echo '> Done'
