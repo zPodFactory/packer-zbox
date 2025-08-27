@@ -30,6 +30,7 @@ apt-get install -y \
   unzip \
   direnv \
   httpie \
+  ripgrep \
   colordiff \
   colortail \
   syslog-ng
