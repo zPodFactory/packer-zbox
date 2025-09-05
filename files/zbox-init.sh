@@ -48,6 +48,26 @@ appliance_config_ovf_settings() {
     OVF_PASSWORD=$(sed -n 's/.*Property oe:key="guestinfo.password" oe:value="\([^"]*\).*/\1/p' $ZBOX_OVFENV_FILE)
     OVF_SSHKEY=$(sed -n 's/.*Property oe:key="guestinfo.sshkey" oe:value="\([^"]*\).*/\1/p' $ZBOX_OVFENV_FILE)
 
+    # Check for cloud-init configuration conflict using direct vmtoolsd queries
+    OVF_METADATA=$(vmtoolsd --cmd 'info-get guestinfo.metadata' 2>/dev/null)
+    OVF_USERDATA=$(vmtoolsd --cmd 'info-get guestinfo.userdata' 2>/dev/null)
+
+    # Check for cloud-init configuration conflict
+    if [[ -n "$OVF_METADATA" ]] || [[ -n "$OVF_USERDATA" ]]; then
+        log "=========================================="
+        log "CLOUD-INIT DEPLOYMENT DETECTED"
+        log "=========================================="
+        log "Exiting zbox-init script..."
+        log "=========================================="
+
+        # Clean up temporary file before exiting
+        if [[ -f "$ZBOX_OVFENV_FILE" ]]; then
+            rm -f "$ZBOX_OVFENV_FILE"
+        fi
+
+        exit 0
+    fi
+
     clear
     log "========== OVF Settings =========="
     log "FQDN: $OVF_HOSTNAME.$OVF_DOMAIN"

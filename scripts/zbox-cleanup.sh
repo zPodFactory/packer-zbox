@@ -10,6 +10,8 @@ cat << EOF > /etc/network/interfaces
 # This file describes the network interfaces available on your system
 # and how to activate them. For more information, see interfaces(5).
 
+source /etc/network/interfaces.d/*
+
 # The loopback network interface
 auto lo
 iface lo inet loopback
@@ -59,5 +61,8 @@ dd if=/dev/zero of=/EMPTY bs=16M || true; sync; sleep 1; sync
 rm -f /EMPTY; sync; sleep 1; sync
 
 duf -only local
+
+# Cleanup cloud-init for firstboot
+cloud-init clean
 
 echo '> Done'
