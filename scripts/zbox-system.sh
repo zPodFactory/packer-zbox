@@ -33,7 +33,8 @@ apt-get install -y \
   ripgrep \
   colordiff \
   colortail \
-  syslog-ng
+  syslog-ng \
+  cloud-init
 
 #
 # Install fx (JSON tool)
