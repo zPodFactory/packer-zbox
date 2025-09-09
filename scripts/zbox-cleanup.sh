@@ -65,4 +65,7 @@ duf -only local
 # Cleanup cloud-init for firstboot
 cloud-init clean
 
+# Disable cloud-init for firstboot (let zbox-init.sh handle it)
+touch /etc/cloud/cloud-init.disabled
+
 echo '> Done'
