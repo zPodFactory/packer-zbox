@@ -1,0 +1,15 @@
+[Unit]
+Description=zBox early init (requires vmtools + dbus)
+# Ensure root fs is rw before doing anything
+After=systemd-remount-fs.service local-fs.target
+# Hard requirements
+Requires=open-vm-tools.service dbus.socket
+After=open-vm-tools.service dbus.socket
+
+[Service]
+Type=oneshot
+ExecStart=/sbin/zbox-init.sh
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target
