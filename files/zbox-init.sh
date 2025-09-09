@@ -57,8 +57,29 @@ appliance_config_ovf_settings() {
         log "=========================================="
         log "CLOUD-INIT DEPLOYMENT DETECTED"
         log "=========================================="
-        log "Exiting zbox-init script..."
+        log "Executing cloud-init..."
         log "=========================================="
+
+        # Clean up cloud-init
+        cloud-init clean --logs | tee -a $ZBOX_CONFIG_FILE
+
+        # Init cloud-init
+        cloud-init init --local | tee -a $ZBOX_CONFIG_FILE
+        cloud-init init | tee -a $ZBOX_CONFIG_FILE
+
+        # As we are bypassing "normal" systemd/cloud-init initialization
+        # we need to bring up the network manually
+        ifup eth0 | tee -a $ZBOX_CONFIG_FILE
+
+        # Run cloud-init modules
+        cloud-init modules --mode=config | tee -a $ZBOX_CONFIG_FILE
+        cloud-init modules --mode=final | tee -a $ZBOX_CONFIG_FILE
+
+        # Disable cloud-init
+        touch /etc/cloud/cloud-init.disabled
+
+        # Clean up tty1 service (cosmetic artefacts on console)
+        systemctl restart getty@tty1.service
 
         # Clean up temporary file before exiting
         if [[ -f "$ZBOX_OVFENV_FILE" ]]; then
@@ -66,16 +87,17 @@ appliance_config_ovf_settings() {
         fi
 
         exit 0
+    else
+        log "=========================================="
+        log "ZBOX-INIT DEPLOYMENT DETECTED"
+        log "=========================================="
+        log "FQDN: $OVF_HOSTNAME.$OVF_DOMAIN"
+        log "DNS: $OVF_DNS"
+        log "Network: $OVF_IPADDRESS/$OVF_NETPREFIX"
+        log "Gateway: $OVF_GATEWAY"
+        log "SSH Key: $OVF_SSHKEY"
+        log "=========================================="
     fi
-
-    clear
-    log "========== OVF Settings =========="
-    log "FQDN: $OVF_HOSTNAME.$OVF_DOMAIN"
-    log "DNS: $OVF_DNS"
-    log "Network: $OVF_IPADDRESS/$OVF_NETPREFIX"
-    log "Gateway: $OVF_GATEWAY"
-    log "SSH Key: $OVF_SSHKEY"
-    log "=================================="
 }
 
 
