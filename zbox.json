@@ -74,6 +74,11 @@
   }],
   "provisioners": [
     {
+      "destination": "/etc/systemd/system/zbox-init.service",
+      "source": "files/zbox-init.service",
+      "type": "file"
+    },
+    {
       "destination": "/sbin/zbox-init.sh",
       "source": "files/zbox-init.sh",
       "type": "file"
