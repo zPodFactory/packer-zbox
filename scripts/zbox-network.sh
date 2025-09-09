@@ -9,6 +9,7 @@
 echo '> Installing Network utilities...'
 
 apt-get install -y \
+  gping \
   rsync \
   ipcalc \
   telnet \
@@ -30,11 +31,5 @@ curl -sS https://raw.githubusercontent.com/mr-karan/doggo/main/install.sh | /bin
 # https://github.com/jonathanruiz/wakey
 #
 wget -qO /usr/local/bin/wakey https://github.com/jonathanruiz/wakey/releases/latest/download/wakey_linux_amd64 && chmod +x /usr/local/bin/wakey
-
-#
-# Install nping
-# https://github.com/hanshuaikang/Nping
-#
-curl -L https://github.com/hanshuaikang/Nping/releases/download/v0.4.0/nping-x86_64-unknown-linux-gnu.tar.gz | tar -xz && install -m 755 nping /usr/local/bin/nping && rm nping
 
 echo '> Done'
