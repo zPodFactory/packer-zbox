@@ -180,7 +180,6 @@ packages:
 
 package_update: true
 package_upgrade: false
-
 ```
 
 `cloudinit.json` (adapt "Network" to your environment):
