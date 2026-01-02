@@ -32,4 +32,16 @@ curl -sS https://raw.githubusercontent.com/mr-karan/doggo/main/install.sh | /bin
 #
 wget -qO /usr/local/bin/wakey https://github.com/jonathanruiz/wakey/releases/latest/download/wakey_linux_amd64 && chmod +x /usr/local/bin/wakey
 
+#
+# Install snitch (a prettier way to inspect network connections)
+# https://github.com/karol-broda/snitch
+#
+curl -sSL https://raw.githubusercontent.com/karol-broda/snitch/master/install.sh | sh
+
+#
+# Install witr (Why is this running? )
+# https://github.com/pranshuparmar/witr
+#
+curl -fsSL https://raw.githubusercontent.com/pranshuparmar/witr/main/install.sh | bash
+
 echo '> Done'
