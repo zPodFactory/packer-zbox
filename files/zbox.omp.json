@@ -87,13 +87,10 @@
           "invert_powerline": true
         },
         {
-          "properties": {
-            "cache_duration": "none",
-            "command": "hostname -f"
-          },
+          "template": " {{ .HostName }} ",
           "foreground": "#ffffff",
           "background": "#33658A",
-          "type": "command",
+          "type": "session",
           "style": "diamond",
           "invert_powerline": true
         }
@@ -112,7 +109,7 @@
           "type": "text",
           "style": "plain"
         },
-	{
+        {
           "properties": {
             "cache_duration": "none"
           },
@@ -121,11 +118,11 @@
           "type": "exit",
           "style": "plain"
         },
-	{
-		"template": "❱",
-		"type": "text",
-		"style": "plain"
-	}
+        {
+          "template": "❱",
+          "type": "text",
+          "style": "plain"
+        }
       ],
       "newline": true
     }
