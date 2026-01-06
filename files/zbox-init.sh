@@ -251,6 +251,53 @@ appliance_config_credentials() {
 }
 
 
+# Function to create and configure zadmin user
+appliance_config_user() {
+    local ZADMIN_USER="zadmin"
+
+    log "Configuring user $ZADMIN_USER..."
+
+    # Check if user already exists
+    if id "$ZADMIN_USER" &>/dev/null; then
+        log "User $ZADMIN_USER already exists, skipping creation."
+        return 0
+    fi
+
+    # Create user with zsh shell (adduser will use /etc/skel for home directory)
+    adduser --disabled-password --gecos "zBox Admin" --shell /bin/zsh "$ZADMIN_USER"
+    log "User $ZADMIN_USER created."
+
+    # Add to sudo group
+    usermod -aG sudo "$ZADMIN_USER"
+    log "User $ZADMIN_USER added to sudo group."
+
+    # Configure NOPASSWD sudo access
+    echo "$ZADMIN_USER ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/$ZADMIN_USER
+    chmod 440 /etc/sudoers.d/$ZADMIN_USER
+    log "NOPASSWD sudo access configured for $ZADMIN_USER."
+
+    # Set password (same as root)
+    if [[ -n "$OVF_PASSWORD" ]]; then
+        echo "$ZADMIN_USER:$OVF_PASSWORD" | chpasswd
+        log "Password set for $ZADMIN_USER."
+    else
+        log "Warning: No password provided for $ZADMIN_USER."
+    fi
+
+    # Add SSH key (same as root)
+    if [[ -n "$OVF_SSHKEY" ]]; then
+        mkdir -p /home/$ZADMIN_USER/.ssh
+        chmod 700 /home/$ZADMIN_USER/.ssh
+        echo "$OVF_SSHKEY" >> /home/$ZADMIN_USER/.ssh/authorized_keys
+        chmod 600 /home/$ZADMIN_USER/.ssh/authorized_keys
+        chown -R $ZADMIN_USER:$ZADMIN_USER /home/$ZADMIN_USER/.ssh
+        log "SSH key added for $ZADMIN_USER."
+    else
+        log "Warning: No SSH key provided for $ZADMIN_USER."
+    fi
+}
+
+
 # Main execution logic
 main() {
     if [[ "$EXTEND_DISK_MODE" == "true" ]]; then
@@ -270,6 +317,7 @@ main() {
     appliance_config_host
     appliance_config_storage
     appliance_config_credentials
+    appliance_config_user
 
     # Clean up temporary files
     if [[ -f "$ZBOX_OVFENV_FILE" ]]; then

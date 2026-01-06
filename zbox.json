@@ -99,18 +99,28 @@
       ]
     },
     {
-      "destination": "$HOME/.poshthemes/zbox.omp.json",
+      "destination": "/usr/share/poshthemes/zbox.omp.json",
       "source": "files/zbox.omp.json",
       "type": "file"
     },
     {
-      "destination": "$HOME/.tmux.conf",
+      "destination": "/etc/skel/.zshrc",
+      "source": "files/zshrc",
+      "type": "file"
+    },
+    {
+      "destination": "/etc/skel/.tmux.conf",
       "source": "files/tmux.conf",
       "type": "file"
     },
     {
       "destination": "$HOME/.zshrc",
       "source": "files/zshrc",
+      "type": "file"
+    },
+    {
+      "destination": "$HOME/.tmux.conf",
+      "source": "files/tmux.conf",
       "type": "file"
     }
   ]
