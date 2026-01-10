@@ -24,8 +24,8 @@ OVF Properties:
 - https://cloud.tsugliani.fr/ova/zbox-12.11.ova
 
 OVF Properties & cloud-init:
-- https://cloud.tsugliani.fr/ova/zbox-13.0.ova
-- https://cloud.tsugliani.fr/ova/zbox-13.1.ova
+- https://cloud.tsugliani.fr/ova/zbox-13.2.ova
+- https://cloud.tsugliani.fr/ova/zbox-13.3.ova
 
 
 
