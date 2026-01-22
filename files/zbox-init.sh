@@ -38,15 +38,21 @@ appliance_config_ovf_settings() {
     # Get OVF environment and save to file
     vmtoolsd --cmd 'info-get guestinfo.ovfEnv' >$ZBOX_OVFENV_FILE
 
-    # Parse OVF properties using sed
-    OVF_HOSTNAME=$(sed -n 's/.*Property oe:key="guestinfo.hostname" oe:value="\([^"]*\).*/\1/p' $ZBOX_OVFENV_FILE)
-    OVF_DNS=$(sed -n 's/.*Property oe:key="guestinfo.dns" oe:value="\([^"]*\).*/\1/p' $ZBOX_OVFENV_FILE)
-    OVF_DOMAIN=$(sed -n 's/.*Property oe:key="guestinfo.domain" oe:value="\([^"]*\).*/\1/p' $ZBOX_OVFENV_FILE)
-    OVF_GATEWAY=$(sed -n 's/.*Property oe:key="guestinfo.gateway" oe:value="\([^"]*\).*/\1/p' $ZBOX_OVFENV_FILE)
-    OVF_IPADDRESS=$(sed -n 's/.*Property oe:key="guestinfo.ipaddress" oe:value="\([^"]*\).*/\1/p' $ZBOX_OVFENV_FILE)
-    OVF_NETPREFIX=$(sed -n 's/.*Property oe:key="guestinfo.netprefix" oe:value="\([^"]*\).*/\1/p' $ZBOX_OVFENV_FILE)
-    OVF_PASSWORD=$(sed -n 's/.*Property oe:key="guestinfo.password" oe:value="\([^"]*\).*/\1/p' $ZBOX_OVFENV_FILE)
-    OVF_SSHKEY=$(sed -n 's/.*Property oe:key="guestinfo.sshkey" oe:value="\([^"]*\).*/\1/p' $ZBOX_OVFENV_FILE)
+    # Extract only the first PropertySection (direct child of Environment)
+    # This is necessary when the VM is deployed inside a vApp, where the OVF
+    # environment contains multiple PropertySection elements (one for each VM).
+    # The first PropertySection belongs to the current VM.
+    FIRST_PROP_SECTION=$(awk '/<PropertySection>/,/<\/PropertySection>/{print; if(/<\/PropertySection>/) exit}' $ZBOX_OVFENV_FILE)
+
+    # Parse OVF properties from the extracted section
+    OVF_HOSTNAME=$(echo "$FIRST_PROP_SECTION" | sed -n 's/.*Property oe:key="guestinfo.hostname" oe:value="\([^"]*\).*/\1/p')
+    OVF_DNS=$(echo "$FIRST_PROP_SECTION" | sed -n 's/.*Property oe:key="guestinfo.dns" oe:value="\([^"]*\).*/\1/p')
+    OVF_DOMAIN=$(echo "$FIRST_PROP_SECTION" | sed -n 's/.*Property oe:key="guestinfo.domain" oe:value="\([^"]*\).*/\1/p')
+    OVF_GATEWAY=$(echo "$FIRST_PROP_SECTION" | sed -n 's/.*Property oe:key="guestinfo.gateway" oe:value="\([^"]*\).*/\1/p')
+    OVF_IPADDRESS=$(echo "$FIRST_PROP_SECTION" | sed -n 's/.*Property oe:key="guestinfo.ipaddress" oe:value="\([^"]*\).*/\1/p')
+    OVF_NETPREFIX=$(echo "$FIRST_PROP_SECTION" | sed -n 's/.*Property oe:key="guestinfo.netprefix" oe:value="\([^"]*\).*/\1/p')
+    OVF_PASSWORD=$(echo "$FIRST_PROP_SECTION" | sed -n 's/.*Property oe:key="guestinfo.password" oe:value="\([^"]*\).*/\1/p')
+    OVF_SSHKEY=$(echo "$FIRST_PROP_SECTION" | sed -n 's/.*Property oe:key="guestinfo.sshkey" oe:value="\([^"]*\).*/\1/p')
 
     # Check for cloud-init configuration conflict using direct vmtoolsd queries
     OVF_METADATA=$(vmtoolsd --cmd 'info-get guestinfo.metadata' 2>/dev/null)

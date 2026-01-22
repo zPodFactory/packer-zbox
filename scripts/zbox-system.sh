@@ -36,6 +36,17 @@ apt-get install -y \
   syslog-ng \
   cloud-init
 
+
+#
+# Install eza (a modern replacement for ls)
+# https://github.com/eza-community/eza
+#
+curl -fsSL https://github.com/eza-community/eza/releases/latest/download/eza_x86_64-unknown-linux-gnu.tar.gz | tar xz
+chmod +x eza
+chown root:root eza
+mv eza /usr/local/bin/eza
+
+
 #
 # Install fx (JSON tool)
 # https://github.com/antonmedv/fx
