@@ -53,4 +53,12 @@ curl -fsSL https://raw.githubusercontent.com/pranshuparmar/witr/main/install.sh 
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/lance0/ttl/master/install.sh)" <<<'Y' \
 && chown root:root /usr/local/bin/ttl
 
+#
+# Install surge (fast download manager)
+# https://github.com/surge-downloader/surge
+#
+curl -fsSL https://github.com/surge-downloader/surge/releases/download/v0.4/surge_0.4_linux_amd64.tar.gz \
+ | tar -xz -C /usr/local/bin surge \
+ && chown root:root /usr/local/bin/surge
+
 echo '> Done'
