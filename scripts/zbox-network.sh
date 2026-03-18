@@ -54,11 +54,21 @@ sh -c "$(curl -fsSL https://raw.githubusercontent.com/lance0/ttl/master/install.
 && chown root:root /usr/local/bin/ttl
 
 #
+# Install xfr (A modern iperf3 alternative with a live TUI, multi-client server, and QUIC support)
+# https://github.com/lance0/xfr
+#
+curl -fsSL https://github.com/lance0/xfr/releases/latest/download/xfr-x86_64-unknown-linux-musl.tar.gz \
+ | tar -xz -C /usr/local/bin xfr \
+ && chown root:root /usr/local/bin/xfr
+
+#
 # Install surge (fast download manager)
 # https://github.com/surge-downloader/surge
 #
-curl -fsSL https://github.com/surge-downloader/surge/releases/download/v0.4/surge_0.4_linux_amd64.tar.gz \
- | tar -xz -C /usr/local/bin surge \
- && chown root:root /usr/local/bin/surge
+curl -fsSL -o /dev/null -w "%{url_effective}" -L https://github.com/surge-downloader/Surge/releases/latest \
+| sed 's#.*/tag/v##' \
+| xargs -I T sh -c 'curl -fsSL https://github.com/surge-downloader/Surge/releases/download/vT/Surge_T_linux_amd64.tar.gz \
+  | tar -xzO surge > /usr/local/bin/surge' \
+&& chmod 0755 /usr/local/bin/surge
 
 echo '> Done'
