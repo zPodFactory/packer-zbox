@@ -9,7 +9,7 @@ Opinionated Linux Appliance setup for my personal use.
 My personal *all-in-one* VM for dev and testing.
 
 - Fancy zsh prompt shell (oh-my-zsh/posh/custom theme)
-- Pre-configured apt sources lists for docker, kubernetes, powershell, hashicorp, tailscale
+- Pre-configured apt sources lists for docker, kubernetes, hashicorp, tailscale, netbird, cloudflare tunnel
 - LVM2 based storage configuration (`zbox-init.sh --extend-disk` will automatically extend the disk to the max size of the disk through lvm)
 - Various misc tools
 
@@ -18,18 +18,9 @@ Easily deploy the appliance using the provided `OVF Properties` or `cloud-init` 
 ## Downloads
 
 Latest builds are available here:
-
-OVF Properties:
-- https://cloud.tsugliani.fr/ova/zbox-12.10.ova
-- https://cloud.tsugliani.fr/ova/zbox-12.11.ova
-
-OVF Properties & cloud-init:
 - https://cloud.tsugliani.fr/ova/zbox-13.2.ova
 - https://cloud.tsugliani.fr/ova/zbox-13.3.ova
-
-
-
-
+- https://cloud.tsugliani.fr/ova/zbox-13.4.ova
 
 
 ## Deployment examples
@@ -121,7 +112,7 @@ Sample configuration for OVF Properties deployment where it will setup the netwo
 
 
 ```bash
-govc import.ova -name zbox -options ovfproperties.json https://cloud.tsugliani.fr/ova/zbox-13.1.ova
+govc import.ova -name zbox -options ovfproperties.json https://cloud.tsugliani.fr/ova/zbox-13.4.ova
 ```
 
 Wait a moment for the VM to be uploaded, created and it should be available with the provided IP address/credentials from the `ovfproperties.json` file.
@@ -218,7 +209,7 @@ export METADATA=$(gzip -c9 <metadata.yaml | { base64 -w0 2>/dev/null || base64; 
 export USERDATA=$(gzip -c9 <userdata.yaml | { base64 -w0 2>/dev/null || base64; })
 
 # Import the OVA
-govc import.ova -name $VM -options cloudinit.json https://cloud.tsugliani.fr/ova/zbox-13.1.ova
+govc import.ova -name $VM -options cloudinit.json https://cloud.tsugliani.fr/ova/zbox-13.4.ova
 
 # Set the metadata and userdata
 govc vm.change -vm "${VM}" \

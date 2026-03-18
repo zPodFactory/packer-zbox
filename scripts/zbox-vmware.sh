@@ -12,7 +12,7 @@ apt-get install -y \
   open-vm-tools
 
 # Disable VMware guest tools customization of the VM
-# OVF Properties / cloud-init configuration can be used.
+# OVF Properties / cloud-init configuration should be used.
 cat >> /etc/vmware-tools/tools.conf << 'EOF'
 [deployPkg]
 enable-customization=false

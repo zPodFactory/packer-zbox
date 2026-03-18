@@ -15,14 +15,6 @@ apt-get install -y \
 # Detect Debian codename
 debian_codename=$(lsb_release -cs)
 
-# Some third-party repos may lag behind Debian releases.
-# Fall back to bookworm for repos that don't publish trixie yet.
-hashicorp_codename="$debian_codename"
-microsoft_codename="$debian_codename"
-if [ "$debian_codename" = "trixie" ]; then
-  hashicorp_codename="bookworm"
-  microsoft_codename="bookworm"
-fi
 # Create folder for all new added APT repositories GPG Signing Keys
 mkdir -m 0755 -p /etc/apt/keyrings
 
@@ -44,30 +36,19 @@ echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.
 curl -fsSL https://apt.releases.hashicorp.com/gpg | gpg --dearmor -o /etc/apt/keyrings/hashicorp.gpg
 
 # Add Hashicorp official repository (fallback to bookworm on trixie)
-echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/hashicorp.gpg] https://apt.releases.hashicorp.com ${hashicorp_codename} main" \
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/hashicorp.gpg] https://apt.releases.hashicorp.com ${debian_codename} main" \
 | tee /etc/apt/sources.list.d/hashicorp.list
 
 ##
 ## Kubernetes
 ##
 
-curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.33/deb/Release.key | gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
-chmod 644 /etc/apt/keyrings/kubernetes-apt-keyring.gpg # allow unprivileged APT programs to read this keyring
+kubernetes_version=$(curl -L -s https://dl.k8s.io/release/stable.txt | cut -d. -f1-2)
+curl -fsSL https://pkgs.k8s.io/core:/stable:/${kubernetes_version}/deb/Release.key | gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
 
 # Add Kubernetes official repository
-
-echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.33/deb/ /' \
+echo "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/${kubernetes_version}/deb/ /" \
 | tee /etc/apt/sources.list.d/kubernetes.list
-
-##
-## Powershell
-##
-
-curl -fsSL https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor -o /etc/apt/keyrings/microsoft.gpg
-
-# Add Microsoft official repository (fallback to bookworm on trixie)
-echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/microsoft.gpg] https://packages.microsoft.com/repos/microsoft-debian-${microsoft_codename}-prod ${microsoft_codename} main" \
-| tee /etc/apt/sources.list.d/microsoft.list
 
 
 ##
@@ -85,6 +66,13 @@ curl -fsSL https://pkgs.tailscale.com/stable/debian/trixie.tailscale-keyring.lis
 curl -sSL https://pkgs.netbird.io/debian/public.key | gpg --dearmor --output /usr/share/keyrings/netbird-archive-keyring.gpg
 echo 'deb [signed-by=/usr/share/keyrings/netbird-archive-keyring.gpg] https://pkgs.netbird.io/debian stable main' | tee /etc/apt/sources.list.d/netbird.list
 
+
+##
+## Cloudflare Tunnel
+##
+
+curl -fsSL https://pkg.cloudflare.com/cloudflare-main.gpg | gpg --dearmor -o /etc/apt/keyrings/cloudflare-main.gpg
+echo 'deb [signed-by=/etc/apt/keyrings/cloudflare-main.gpg] https://pkg.cloudflare.com/cloudflared any main' | tee /etc/apt/sources.list.d/cloudflared.list
 
 # Update APT repository package list
 apt-get update

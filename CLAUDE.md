@@ -13,7 +13,7 @@ packer-zbox is a Packer-based project that builds a customized Debian Linux VM a
 ./build-zbox.sh
 
 # The build script runs:
-# packer build --var-file="zbox-builder.json" --var-file="zbox-13.2.json" zbox.json
+# packer build --var-file="zbox-builder.json" --var-file="zbox-13.4.json" zbox.json
 ```
 
 **Prerequisites:**
@@ -32,15 +32,15 @@ packer-zbox is a Packer-based project that builds a customized Debian Linux VM a
 
 1. **Boot & Install**: Packer boots Debian netinst ISO on ESXi, uses `http/preseed.cfg` for automated installation with LVM partitioning
 2. **Provisioning**: Runs shell scripts from `scripts/` in order:
-   - `zbox-update.sh` - Initial apt update
-   - `zbox-apt.sh` - Adds third-party repos (Docker, Hashicorp, Kubernetes, Tailscale, PowerShell, eza)
-   - `zbox-system.sh` - Installs utilities (jq, bat, fzf, ripgrep, htop, etc.)
-   - `zbox-network.sh` - Network configuration
-   - `zbox-storage.sh` - LVM storage setup
-   - `zbox-settings.sh` - System settings
+   - `zbox-update.sh` - apt update and upgrade to latest packages
+   - `zbox-apt.sh` - Adds third-party repos (Docker, Hashicorp, Kubernetes, Tailscale, Netbird, Cloudflare Tunnel)
+   - `zbox-system.sh` - Installs system utilities (jq, bat, eza, fzf, ripgrep, htop, btop, fx, etc.) and cloud-init
+   - `zbox-network.sh` - Installs network utilities (gping, doggo, tcpdump, wireguard, wakey, snitch, witr, ttl, xfr, surge, etc.)
+   - `zbox-storage.sh` - Installs storage utilities (gdu, lftp, pure-ftpd, nfs-kernel-server, cull)
+   - `zbox-settings.sh` - Configures DNS resolver, IP forwarding, SSH banner, and enables zbox-init service
    - `zbox-shell.sh` - Installs zsh, oh-my-zsh, oh-my-posh, tmux with catppuccin, zoxide, atuin
-   - `zbox-vmware.sh` - VMware tools
-   - `zbox-cleanup.sh` - Cleanup for smaller image
+   - `zbox-vmware.sh` - Installs open-vm-tools and cloud-guest-utils, disables guest customization
+   - `zbox-cleanup.sh` - Removes unnecessary packages, zeroes disk, cleans logs for smaller OVA export
 3. **File Provisioning**: Copies config files from `files/` (zshrc, tmux.conf, oh-my-posh theme, init service)
 4. **Post-processing**: `postprocess-ova-properties/add_ovf_properties.sh` injects OVF properties from `appliance.xml.template` and converts to OVA
 
