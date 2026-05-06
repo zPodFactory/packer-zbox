@@ -27,7 +27,11 @@ export XDG_CACHE_HOME=$HOME/.cache
 ZSH_THEME="af-magic"
 
 plugins=(
-  git
+  direnv
+  httpie
+  mise
+  rsync
+  zoxide
   zsh-autosuggestions
   zsh-syntax-highlighting
 )
@@ -37,14 +41,11 @@ source $ZSH/oh-my-zsh.sh
 
 # Modify some aliases to use our subjectively better tools
 alias c="batcat"
-alias cd="z"
 alias ip="ip -c"
 alias duf="duf -only local"
 alias diff="colordiff"
 
 # Some fancy stuff
-eval "$(direnv hook zsh)"
-eval "$(zoxide init zsh)"
 eval "$(atuin init zsh --disable-up-arrow)"
 
 # Load fancy prompt if on SSH/nerd-fonts for symbols

@@ -18,13 +18,14 @@ apt-get install -y \
   man \
   vim \
   btop \
+  ccze \
   file \
   htop \
   lnav \
   make \
-  ccze \
-  tree \
+  mise \
   tmux \
+  tree \
   bzip2 \
   dstat \
   unzip \
