@@ -8,10 +8,11 @@ Opinionated Linux Appliance setup for my personal use.
 
 My personal *all-in-one* VM for dev and testing.
 
-- Fancy zsh prompt shell (oh-my-zsh/posh/custom theme)
-- Pre-configured apt sources lists for docker, kubernetes, hashicorp, tailscale, netbird, cloudflare tunnel
+- Fancy zsh prompt shell (oh-my-zsh/posh/custom theme, tmux with catppuccin, true-color support)
+- Pre-configured apt sources lists for docker, kubernetes, hashicorp, tailscale, netbird, cloudflare tunnel, mise
 - LVM2 based storage configuration (`zbox-init.sh --extend-disk` will automatically extend the disk to the max size of the disk through lvm)
-- Various misc tools
+- Dotfiles management with [chezmoi](https://chezmoi.io/) and runtime version manager [mise](https://mise.jdx.dev/)
+- Various misc tools (`bat`, `eza`, `fzf`, `ripgrep`, `btop`, `fx`, `gping`, `doggo`, `snitch`, `witr`, `ttl`, `xfr`, `surge`, `gdu`, `cull`, `atuin`, `zoxide`, ...)
 
 Easily deploy the appliance using the provided `OVF Properties` or `cloud-init` configuration.
 

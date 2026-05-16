@@ -29,7 +29,6 @@ apt-get install -y \
   bzip2 \
   dstat \
   unzip \
-  direnv \
   httpie \
   ripgrep \
   colordiff \
