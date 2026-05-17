@@ -19,9 +19,8 @@ Easily deploy the appliance using the provided `OVF Properties` or `cloud-init` 
 ## Downloads
 
 Latest builds are available here:
-- https://cloud.tsugliani.fr/ova/zbox-13.2.ova
-- https://cloud.tsugliani.fr/ova/zbox-13.3.ova
-- https://cloud.tsugliani.fr/ova/zbox-13.4.ova
+- https://cloud.tsugliani.fr/ova/zbox-13.4.ova 
+- https://cloud.tsugliani.fr/ova/zbox-13.5.ova 
 
 
 ## Deployment examples
@@ -113,7 +112,7 @@ Sample configuration for OVF Properties deployment where it will setup the netwo
 
 
 ```bash
-govc import.ova -name zbox -options ovfproperties.json https://cloud.tsugliani.fr/ova/zbox-13.4.ova
+govc import.ova -name zbox -options ovfproperties.json https://cloud.tsugliani.fr/ova/zbox-13.5.ova
 ```
 
 Wait a moment for the VM to be uploaded, created and it should be available with the provided IP address/credentials from the `ovfproperties.json` file.
@@ -210,7 +209,7 @@ export METADATA=$(gzip -c9 <metadata.yaml | { base64 -w0 2>/dev/null || base64; 
 export USERDATA=$(gzip -c9 <userdata.yaml | { base64 -w0 2>/dev/null || base64; })
 
 # Import the OVA
-govc import.ova -name $VM -options cloudinit.json https://cloud.tsugliani.fr/ova/zbox-13.4.ova
+govc import.ova -name $VM -options cloudinit.json https://cloud.tsugliani.fr/ova/zbox-13.5.ova
 
 # Set the metadata and userdata
 govc vm.change -vm "${VM}" \
@@ -263,4 +262,3 @@ This should take around 15 minutes to build the appliance and find the OVA file 
 ```bash
 ls -l output-zbox-xyz/*.ova
 ```
-

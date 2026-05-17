@@ -54,11 +54,7 @@ curl -sSfL https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh 
 
 echo '> Installing atuin globally...'
 # Install atuin binary to /usr/local/bin instead of per-user
-curl --proto '=https' --tlsv1.2 -LsSf https://setup.atuin.sh | ATUIN_NO_MODIFY_PATH=1 sh
-# Move atuin binary to global location
-mv $HOME/.atuin/bin/atuin /usr/local/bin/atuin
-rm -rf $HOME/.atuin
-
+curl --proto '=https' --tlsv1.2 -LsSf https://setup.atuin.sh | ATUIN_NO_MODIFY_PATH=1 ATUIN_INSTALL_DIR=/usr/local/bin sh -s -- --non-interactive
 
 echo '> Setting up /etc/skel for new users...'
 # Create symlinks in /etc/skel so new users get the configuration
