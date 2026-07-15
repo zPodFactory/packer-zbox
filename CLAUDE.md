@@ -13,7 +13,7 @@ packer-zbox is a Packer-based project that builds a customized Debian Linux VM a
 ./build-zbox.sh
 
 # The build script runs:
-# packer build --var-file="zbox-builder.json" --var-file="zbox-13.4.json" zbox.json
+# packer build --var-file="zbox-builder.json" --var-file="zbox-13.6.json" zbox.json
 ```
 
 **Prerequisites:**
@@ -25,7 +25,7 @@ packer-zbox is a Packer-based project that builds a customized Debian Linux VM a
 ### Packer Configuration
 
 - `zbox.json` - Main Packer template defining the VMware ISO builder, provisioners, and post-processors
-- `zbox-X.Y.json` - Version-specific variables (Debian version, ISO URL, checksums)
+- `zbox-X.Y.json` - Version-specific variables (Debian version, ISO URL, checksums); current build uses **`zbox-13.6.json`**
 - `zbox-builder.json` - Builder environment config (ESXi host, credentials, datastore)
 
 ### Build Flow
