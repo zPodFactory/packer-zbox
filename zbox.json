@@ -84,6 +84,11 @@
       "type": "file"
     },
     {
+      "destination": "/sbin/zbox-zboxtui-setup.sh",
+      "source": "files/zbox-zboxtui-setup.sh",
+      "type": "file"
+    },
+    {
       "type": "shell",
       "environment_vars": ["DEBIAN_FRONTEND=noninteractive"],
       "scripts": [

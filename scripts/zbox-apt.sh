@@ -83,6 +83,21 @@ curl -fsSL https://pkg.cloudflare.com/cloudflare-main.gpg | gpg --dearmor -o /et
 echo "deb [signed-by=/etc/apt/keyrings/cloudflare-main.gpg] https://pkg.cloudflare.com/cloudflared any main" \
 | tee /etc/apt/sources.list.d/cloudflared.list
 
+
+##
+## Microsoft
+##
+# https://learn.microsoft.com/en-us/linux/packages
+
+source /etc/os-release
+
+curl -fsSL -o packages-microsoft-prod.deb \
+  "https://packages.microsoft.com/config/debian/${VERSION_ID}/packages-microsoft-prod.deb"
+
+dpkg -i packages-microsoft-prod.deb
+rm -f packages-microsoft-prod.deb
+
+
 ##
 ## Mise
 ##
@@ -92,6 +107,7 @@ curl -fSs https://mise.en.dev/gpg-key.pub | gpg --dearmor -o /etc/apt/keyrings/m
 # Add Mise official repository
 echo "deb [signed-by=/etc/apt/keyrings/mise.gpg] https://mise.en.dev/deb stable main" \
 | tee /etc/apt/sources.list.d/mise.list
+
 
 
 # Update APT repository package list

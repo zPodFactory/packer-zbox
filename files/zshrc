@@ -22,8 +22,7 @@ fi
 export ZSH="/usr/share/oh-my-zsh"
 export XDG_CACHE_HOME=$HOME/.cache
 
-# Theme that will be used in the console (when not going through SSH)
-# it's to avoid the nerd-fonts symbols in the prompt
+# Fallback prompt on stock agetty (16-color VT); oh-my-posh replaces this when fancy.
 ZSH_THEME="af-magic"
 
 plugins=(
@@ -47,10 +46,13 @@ alias diff="colordiff"
 # Some fancy stuff
 eval "$(atuin init zsh --disable-up-arrow)"
 
-# Load fancy prompt if on SSH/nerd-fonts for symbols
-if [[ -n $SSH_CONNECTION ]]; then
+# Load fancy prompt/aliases for truecolor-capable sessions:
+#   - kmscon console (sets COLORTERM=kmscon)
+#   - SSH sessions (modern terminals handle truecolor)
+# Skip for stock agetty/serial consoles that can't render it.
+if [[ "${COLORTERM:-}" == kmscon || -n "${SSH_CONNECTION:-}" ]]; then
+  export COLORTERM=truecolor
   alias ll="eza -ll --group-directories-first --icons \$eza_params"
   alias la="eza -la --group-directories-first --icons \$eza_params"
-  # Load fancy prompt if on SSH/nerd-fonts for symbols
   eval "$(oh-my-posh --init --shell zsh --config /usr/share/poshthemes/zbox.omp.json)"
 fi

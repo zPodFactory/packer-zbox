@@ -10,7 +10,8 @@ My personal *all-in-one* VM for dev and testing.
 
 - Fancy zsh prompt shell (oh-my-zsh/posh/custom theme, tmux with catppuccin, true-color support)
 - Pre-configured apt sources lists for docker, kubernetes, hashicorp, tailscale, netbird, cloudflare tunnel, mise
-- LVM2 based storage configuration (`zbox-init.sh --extend-disk` will automatically extend the disk to the max size of the disk through lvm)
+- LVM2 based storage configuration (first boot grows root via `zbox-init`; `zbox-init.sh --extend-disk` runs storage expansion only)
+- **zBoxTUI** on **tty1** (kmscon DCUI) — see [docs/zboxtui-integration.md](docs/zboxtui-integration.md) and [zBoxTUI INSTALL.md](https://github.com/zPodFactory/zBoxTUI/blob/main/INSTALL.md)
 - Dotfiles management with [chezmoi](https://chezmoi.io/) and runtime version manager [mise](https://mise.jdx.dev/)
 - Various misc tools (`bat`, `eza`, `fzf`, `ripgrep`, `btop`, `fx`, `gping`, `doggo`, `snitch`, `witr`, `ttl`, `xfr`, `surge`, `gdu`, `cull`, `atuin`, `zoxide`, ...)
 
@@ -19,8 +20,8 @@ Easily deploy the appliance using the provided `OVF Properties` or `cloud-init` 
 ## Downloads
 
 Latest builds are available here:
-- https://cloud.tsugliani.fr/ova/zbox-13.4.ova 
 - https://cloud.tsugliani.fr/ova/zbox-13.5.ova 
+- https://cloud.tsugliani.fr/ova/zbox-13.6.ova 
 
 
 ## Deployment examples
@@ -112,7 +113,7 @@ Sample configuration for OVF Properties deployment where it will setup the netwo
 
 
 ```bash
-govc import.ova -name zbox -options ovfproperties.json https://cloud.tsugliani.fr/ova/zbox-13.5.ova
+govc import.ova -name zbox -options ovfproperties.json https://cloud.tsugliani.fr/ova/zbox-13.6.ova
 ```
 
 Wait a moment for the VM to be uploaded, created and it should be available with the provided IP address/credentials from the `ovfproperties.json` file.
@@ -140,7 +141,7 @@ network:
 
 ```
 
-`user-data.yaml` (adapt to your liking):
+`userdata.yaml` (adapt to your liking):
 
 ```yaml
 #cloud-config
@@ -209,7 +210,7 @@ export METADATA=$(gzip -c9 <metadata.yaml | { base64 -w0 2>/dev/null || base64; 
 export USERDATA=$(gzip -c9 <userdata.yaml | { base64 -w0 2>/dev/null || base64; })
 
 # Import the OVA
-govc import.ova -name $VM -options cloudinit.json https://cloud.tsugliani.fr/ova/zbox-13.5.ova
+govc import.ova -name $VM -options cloudinit.json https://cloud.tsugliani.fr/ova/zbox-13.6.ova
 
 # Set the metadata and userdata
 govc vm.change -vm "${VM}" \
@@ -221,7 +222,7 @@ govc vm.change -vm "${VM}" \
 # Power on the VM
 govc vm.power -on ${VM}
 ```
-Wait a moment for the VM to be uploaded, created and it should be available with the provided IP address/credentials with the provided cloud init `metadata.yaml` and `user-data.yaml` configurations.
+Wait a moment for the VM to be uploaded, created and it should be available with the provided IP address/credentials with the provided cloud init `metadata.yaml` and `userdata.yaml` configurations.
 
 ## Screenshots
 
@@ -257,8 +258,10 @@ Then you can build the appliance using the provided `build-zbox.sh` script.
 ```bash
 ./build-zbox.sh
 ```
-This should take around 15 minutes to build the appliance and find the OVA file in the `output-zbox-xyz` directory. (adapt to your version)
+This should take around 15 minutes to build the appliance. The OVA is written to
+`output-zbox-<version>/` (for example `output-zbox-13.6/zbox-13.6.ova` when using
+`zbox-13.6.json`).
 
 ```bash
-ls -l output-zbox-xyz/*.ova
+ls -l output-zbox-13.6/*.ova
 ```

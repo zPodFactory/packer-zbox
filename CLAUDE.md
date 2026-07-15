@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-packer-zbox is a Packer-based project that builds a customized Debian Linux VM appliance (zBox) as an OVA. The appliance is designed for development and testing with pre-configured tools, shell enhancements, and deployment options via OVF properties or cloud-init.
+packer-zbox is a Packer-based project that builds a customized Debian Linux VM appliance (zBox) as an OVA. The appliance is designed for development and testing with pre-configured tools, shell enhancements, optional **zBoxTUI** on the physical console (tty1), and deployment via OVF properties or cloud-init.
 
 ## Build Commands
 
@@ -13,7 +13,7 @@ packer-zbox is a Packer-based project that builds a customized Debian Linux VM a
 ./build-zbox.sh
 
 # The build script runs:
-# packer build --var-file="zbox-builder.json" --var-file="zbox-13.4.json" zbox.json
+# packer build --var-file="zbox-builder.json" --var-file="zbox-13.6.json" zbox.json
 ```
 
 **Prerequisites:**
@@ -25,7 +25,7 @@ packer-zbox is a Packer-based project that builds a customized Debian Linux VM a
 ### Packer Configuration
 
 - `zbox.json` - Main Packer template defining the VMware ISO builder, provisioners, and post-processors
-- `zbox-X.Y.json` - Version-specific variables (Debian version, ISO URL, checksums)
+- `zbox-X.Y.json` - Version-specific variables (Debian version, ISO URL, checksums); current build uses **`zbox-13.6.json`**
 - `zbox-builder.json` - Builder environment config (ESXi host, credentials, datastore)
 
 ### Build Flow
@@ -34,22 +34,31 @@ packer-zbox is a Packer-based project that builds a customized Debian Linux VM a
 2. **Provisioning**: Runs shell scripts from `scripts/` in order:
    - `zbox-update.sh` - apt update and upgrade to latest packages
    - `zbox-apt.sh` - Adds third-party repos (Docker, Hashicorp, Kubernetes, Tailscale, Netbird, Cloudflare Tunnel)
-   - `zbox-system.sh` - Installs system utilities (jq, bat, eza, fzf, ripgrep, htop, btop, fx, etc.) and cloud-init
+   - `zbox-system.sh` - Installs system utilities (jq, bat, eza, fzf, ripgrep, htop, btop, fx, etc.), cloud-init, and **`/sbin/zbox-zboxtui-setup.sh --enable`**
    - `zbox-network.sh` - Installs network utilities (gping, doggo, tcpdump, wireguard, wakey, snitch, witr, ttl, xfr, surge, etc.)
    - `zbox-storage.sh` - Installs storage utilities (gdu, lftp, pure-ftpd, nfs-kernel-server, cull)
    - `zbox-settings.sh` - Configures DNS resolver, IP forwarding, SSH banner, and enables zbox-init service
    - `zbox-shell.sh` - Installs zsh, oh-my-zsh, oh-my-posh, tmux with catppuccin, zoxide, atuin
    - `zbox-vmware.sh` - Installs open-vm-tools and cloud-guest-utils, disables guest customization
    - `zbox-cleanup.sh` - Removes unnecessary packages, zeroes disk, cleans logs for smaller OVA export
-3. **File Provisioning**: Copies config files from `files/` (zshrc, tmux.conf, oh-my-posh theme, init service)
+3. **File Provisioning**: Copies config files from `files/` (`zbox-init` service, `zbox-zboxtui-setup.sh`, zshrc, tmux.conf, oh-my-posh theme)
 4. **Post-processing**: `postprocess-ova-properties/add_ovf_properties.sh` injects OVF properties from `appliance.xml.template` and converts to OVA
+
+### zBoxTUI console (tty1)
+
+See **[docs/zboxtui-integration.md](docs/zboxtui-integration.md)** and [zBoxTUI INSTALL.md](https://github.com/zPodFactory/zBoxTUI/blob/main/INSTALL.md).
+
+- `files/zbox-zboxtui-setup.sh` → `/sbin/zbox-zboxtui-setup.sh`
+- `zbox-system.sh` runs `--enable` at image build time (clones [zBoxTUI](https://github.com/zPodFactory/zBoxTUI) @ `main` by default)
+- **tty1**: kmscon → zBoxTUI; **tty2**: kmscon → login shell; tty3–6: stock getty
 
 ### Runtime Initialization
 
 - `files/zbox-init.sh` - First-boot initialization script (installed as systemd service)
   - Detects deployment method (OVF properties vs cloud-init)
-  - Configures networking, hostname, storage expansion, credentials
-  - `--extend-disk` flag for on-demand LVM disk extension
+  - Configures networking, hostname, storage expansion (LVM grow), credentials
+  - Switches to the default console VT (`/etc/zbox/default-console-vt`, usually **1**)
+  - `--extend-disk` flag runs storage expansion only (no full first-boot path)
 
 ### Deployment Methods
 
@@ -59,9 +68,10 @@ packer-zbox is a Packer-based project that builds a customized Debian Linux VM a
 ## Key Directories
 
 - `scripts/` - Provisioning scripts run during build
-- `files/` - Config files copied to the appliance
+- `files/` - Config files copied to the appliance (including `zbox-zboxtui-setup.sh`)
 - `http/` - Contains preseed.cfg for Debian installer
 - `postprocess-ova-properties/` - OVA post-processing for OVF property injection
+- `docs/` - Console integration notes (`zboxtui-integration.md`)
 
 ## Version Management
 

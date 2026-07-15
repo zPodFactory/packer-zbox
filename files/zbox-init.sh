@@ -32,6 +32,49 @@ log() {
 }
 
 
+# Restart kmscon/getty and switch to the configured default VT (first boot).
+appliance_config_console() {
+    log "Configuring console..."
+
+    local zbox_tty="tty1" vt_num=""
+    if [[ -r /etc/zbox/default-console-vt ]]; then
+        vt_num="$(tr -d '[:space:]' </etc/zbox/default-console-vt)"
+        if [[ "$vt_num" =~ '^[0-9]+$' ]]; then
+            zbox_tty="tty${vt_num}"
+        else
+            log "Warning: invalid value in /etc/zbox/default-console-vt"
+            vt_num=""
+        fi
+    fi
+
+    if systemctl is-enabled kmsconvt@tty2.service &>/dev/null; then
+        log "Restarting kmscon on tty2..."
+        systemctl restart kmsconvt@tty2.service 2>/dev/null || true
+    fi
+    if systemctl is-enabled "kmsconvt@${zbox_tty}.service" &>/dev/null; then
+        log "Restarting kmscon on ${zbox_tty}..."
+        systemctl restart "kmsconvt@${zbox_tty}.service"
+    elif systemctl is-enabled kmsconvt@.service &>/dev/null \
+        || [[ -L /etc/systemd/system/autovt@.service ]]; then
+        log "Restarting kmscon on tty1 (all-VT mode)..."
+        systemctl restart kmsconvt@tty1.service 2>/dev/null || true
+    else
+        log "Restarting getty on tty1..."
+        systemctl restart getty@tty1.service
+    fi
+
+    if [[ -n "$vt_num" ]]; then
+        log "Switching active VT to ${zbox_tty} (Ctrl+Alt+F${vt_num})..."
+        sleep 2
+        if command -v chvt >/dev/null; then
+            chvt "$vt_num"
+        else
+            log "Warning: chvt not found, skipping VT switch"
+        fi
+    fi
+}
+
+
 # Function to fetch OVF settings
 appliance_config_ovf_settings() {
     log "Fetching OVF settings..."
@@ -84,8 +127,7 @@ appliance_config_ovf_settings() {
         # Disable cloud-init
         touch /etc/cloud/cloud-init.disabled
 
-        # Clean up tty1 service (cosmetic artefacts on console)
-        systemctl restart getty@tty1.service
+        appliance_config_console
 
         # Clean up temporary file before exiting
         if [[ -f "$ZBOX_OVFENV_FILE" ]]; then
@@ -184,7 +226,7 @@ appliance_config_storage() {
 
     # Display disk usage before extending partitions
     log "Disk usage before extending partitions:"
-    duf -only local
+    duf -only local | tee -a $ZBOX_CONFIG_FILE
 
     # Rescan the disk (detect size change)
     echo 1 > /sys/class/block/sda/device/rescan
@@ -231,7 +273,7 @@ appliance_config_storage() {
 
     # Display disk usage
     log "Disk usage after resizing:"
-    duf -only local
+    duf -only local | tee -a $ZBOX_CONFIG_FILE
 }
 
 
@@ -324,6 +366,7 @@ main() {
     appliance_config_storage
     appliance_config_credentials
     appliance_config_user
+    appliance_config_console
 
     # Clean up temporary files
     if [[ -f "$ZBOX_OVFENV_FILE" ]]; then

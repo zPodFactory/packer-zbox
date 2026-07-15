@@ -11,11 +11,12 @@ echo '> Installing Network utilities...'
 apt-get install -y \
   gping \
   rsync \
+  chrony \
   ipcalc \
   telnet \
   dnsmasq \
+  dnsutils \
   tcpdump \
-  openntpd \
   mtr-tiny \
   wireguard \
   traceroute \
