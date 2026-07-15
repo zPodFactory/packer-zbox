@@ -8,7 +8,6 @@
 echo '> Installing Storage utilities...'
 
 apt-get install -y \
-  gdu \
   lftp \
   pure-ftpd
 
