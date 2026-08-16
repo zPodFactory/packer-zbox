@@ -304,20 +304,48 @@ ${ZBOXTUI_MARKER_END}
 EOF
 }
 
+# uv is only needed to build+install zBoxTUI during --install (build time); it is
+# removed right after (remove_uv) so it never ships in the image. zbox.json sets
+# skip_compaction, so anything left behind here inflates the OVA directly.
+install_uv() {
+  command -v uv >/dev/null 2>&1 && return 0
+  log "Installing uv..."
+  curl -LsSf https://astral.sh/uv/install.sh | env UV_INSTALL_DIR=/usr/local/bin sh >&2
+  hash -r 2>/dev/null || true
+  command -v uv >/dev/null || die "uv install failed"
+}
+
+remove_uv() {
+  command -v uv >/dev/null 2>&1 || return 0
+  log "Removing uv and its cache"
+  local cache_dir
+  cache_dir="$(uv cache dir 2>/dev/null || true)"
+  [[ -n "$cache_dir" ]] && rm -rf "$cache_dir"
+  rm -f /usr/local/bin/uv /usr/local/bin/uvx
+}
+
 fetch_zboxtui() {
   log "Fetching zBoxTUI (${ZBOXTUI_GIT_URL} @ ${ZBOXTUI_GIT_REF})..."
   rm -rf "$BUILD_DIR"
   git clone --depth 1 --branch "$ZBOXTUI_GIT_REF" "$ZBOXTUI_GIT_URL" "$BUILD_DIR"
 }
 
+build_zboxtui_wheel() {
+  install_uv
+  log "Building zBoxTUI wheel with uv..."
+  (cd "$BUILD_DIR" && uv build --wheel -o dist) >&2 || die "uv build failed"
+  local wheel
+  wheel="$(find "$BUILD_DIR/dist" -maxdepth 1 -name 'zboxtui-*.whl' -type f | sort -V | tail -1)"
+  [[ -n "$wheel" ]] || die "no wheel in ${BUILD_DIR}/dist"
+  echo "$wheel"
+}
+
 install_zboxtui_venv() {
-  local src="$1"
-  local venv_python="${VENV_DIR}/bin/python"
-  log "Installing zBoxTUI into ${VENV_DIR} (pip from ${src})"
+  local wheel="$1"
+  log "Installing zBoxTUI into ${VENV_DIR} (uv from ${wheel})"
   install -d -m 0755 "$(dirname "$VENV_DIR")"
-  [[ -x "$venv_python" ]] || python3 -m venv "$VENV_DIR"
-  "${VENV_DIR}/bin/pip" install --upgrade pip
-  "${VENV_DIR}/bin/pip" install "$src"
+  [[ -x "${VENV_DIR}/bin/python" ]] || uv venv "$VENV_DIR" --python python3
+  uv pip install --python "${VENV_DIR}/bin/python" "$wheel"
   [[ -x "${VENV_DIR}/bin/zboxtui" ]] || die "venv missing zboxtui binary"
   install -d -m 0755 "$(dirname "$ZBOXTUI_BIN")"
   ln -sf "${VENV_DIR}/bin/zboxtui" "$ZBOXTUI_BIN"
@@ -489,7 +517,9 @@ install_software() {
   write_kmscon_conf "$font_name"
 
   fetch_zboxtui
-  install_zboxtui_venv "$BUILD_DIR"
+  local wheel
+  wheel="$(build_zboxtui_wheel)"
+  install_zboxtui_venv "$wheel"
   install_zboxtui_config
   install_console_wrappers
   append_zboxtui_kmscon_snippet
@@ -497,6 +527,7 @@ install_software() {
 
   log "Removing build tree ${BUILD_DIR}"
   rm -rf "$BUILD_DIR"
+  remove_uv
 }
 
 # Wires tty1 (zBoxTUI) + tty2 (kmscon shell); assumes the software is already installed.
