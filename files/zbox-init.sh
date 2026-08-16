@@ -152,13 +152,16 @@ appliance_config_ovf_settings() {
 }
 
 
-# Function to enable zBoxTUI on the physical console (tty1).
+# Function to enable/disable zBoxTUI on the physical console (tty1).
 # The appliance ships with zBoxTUI installed but not wired to any console (stock getty
-# everywhere); only when the OVF property is explicitly "True" do we wire it up here.
+# everywhere). "True" wires it up; anything else purges it to reclaim the space.
 appliance_config_zboxtui() {
     if [[ "$OVF_ZBOXTUI" == "True" ]]; then
         log "zBoxTUI enabled via OVF property."
         /sbin/zbox-zboxtui-setup.sh --enable | tee -a $ZBOX_CONFIG_FILE
+    else
+        log "zBoxTUI disabled (default); removing it to reclaim space."
+        /sbin/zbox-zboxtui-setup.sh --disable | tee -a $ZBOX_CONFIG_FILE
     fi
 }
 

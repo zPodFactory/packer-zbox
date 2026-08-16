@@ -55,10 +55,11 @@ step below) via the `guestinfo.zboxtui` OVF property (boolean, default `false`,
 - `files/zbox-init.sh` parses `guestinfo.zboxtui`; only when it is exactly `"True"`
   (capitalized — this is what `govc` itself requires/produces for a boolean property)
   does it run `/sbin/zbox-zboxtui-setup.sh --enable` on first boot, before switching
-  consoles. Any other value (including unset/`false`) does nothing — the image already
-  ships in the disabled state, so there is no first-boot work to do.
+  consoles. Any other value (including unset/`false`) runs `--disable` instead, which
+  purges kmscon and the zBoxTUI venv/files to reclaim the space the image build baked in.
 - Set the "Enable zBoxTUI Console" property to `True` at OVF deployment time to wire
-  the dashboard onto tty1; leave it unset/`false` to keep the standard login shell.
+  the dashboard onto tty1; leave it unset/`false` to remove zBoxTUI on first boot and
+  keep the standard login shell.
 
 ## Packer
 
