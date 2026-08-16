@@ -39,4 +39,9 @@
         <Label>SSH Public Key</Label>
         <Description>Leverage an SSH Key to login as root with no password</Description>
     </Property>
+    <Category>Console</Category>
+    <Property ovf:key="guestinfo.zboxtui" ovf:type="boolean" ovf:userConfigurable="true" ovf:value="false">
+        <Label>Enable zBoxTUI Console</Label>
+        <Description>Enable the zBoxTUI dashboard on the physical console (tty1). Disabled by default, falling back to a standard login shell</Description>
+    </Property>
 </ProductSection>

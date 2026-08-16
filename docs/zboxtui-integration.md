@@ -5,7 +5,10 @@ Installer: **`/sbin/zbox-zboxtui-setup.sh`** (provisioned from
 
 Full operator and security notes: [zBoxTUI INSTALL.md](https://github.com/zPodFactory/zBoxTUI/blob/main/INSTALL.md).
 
-## Layout (default `--enable`)
+## Layout (with `--enable`)
+
+The appliance ships with the software installed but every VT on stock getty (see
+"Deploy-time toggle" below). Once wired via `--enable` (or the OVF property):
 
 | VT | Service | What you get |
 |----|---------|----------------|
@@ -13,7 +16,8 @@ Full operator and security notes: [zBoxTUI INSTALL.md](https://github.com/zPodFa
 | **tty2** | kmscon → agetty | Truecolor login shell (zsh after login) |
 | tty3–tty6 | getty | Stock Debian login |
 
-First boot: `zbox-init` reads `/etc/zbox/default-console-vt` (`1`) and switches to **F1**.
+First boot (only when wired): `zbox-init` reads `/etc/zbox/default-console-vt` (`1`)
+and switches to **F1**.
 
 **Menu:** Esc/q returns to the dashboard without logging out. F2 login stays valid for
 **15 minutes** (same default as sudo’s timestamp); a cached `sudo` timestamp can extend
@@ -22,6 +26,7 @@ the session without re-entering the password.
 ## Usage
 
 ```bash
+sudo /sbin/zbox-zboxtui-setup.sh --install
 sudo /sbin/zbox-zboxtui-setup.sh --enable
 sudo /sbin/zbox-zboxtui-setup.sh --disable
 
@@ -29,17 +34,38 @@ sudo /sbin/zbox-zboxtui-setup.sh --disable
 sudo /sbin/zbox-zboxtui-setup.sh --enable --font jetbrains --palette latte --font-size 14
 ```
 
-`--enable` (unattended): installs kmscon + Nerd Font, clones
+`--install` (unattended, used at image build time): installs kmscon + Nerd Font, clones
 [zBoxTUI](https://github.com/zPodFactory/zBoxTUI), `uv build` + `pip install` into
 `/opt/zboxtui/venv`, copies `packaging/app.conf.sample` and logrotate, writes kmscon
-and console wrappers inline, then deletes `/tmp/zboxtui-build`.
+and console wrappers inline, then deletes `/tmp/zboxtui-build`. Console wiring is left
+untouched — every VT stays on stock getty.
+
+`--enable`: ensures the software above is installed (skips reinstall if it already is,
+so no network access is required when it was baked in at build time), then wires
+tty1 → zBoxTUI and tty2 → themed kmscon shell.
 
 `--disable`: restores agetty on all VTs, removes zBoxTUI files, `apt purge kmscon`.
+
+## Deploy-time toggle (OVF property)
+
+The image is built with zBoxTUI **installed but not wired to any console** (see Packer
+step below) via the `guestinfo.zboxtui` OVF property (boolean, default `false`,
+`postprocess-ova-properties/appliance.xml.template`).
+
+- `files/zbox-init.sh` parses `guestinfo.zboxtui`; only when it is exactly `"True"`
+  (capitalized — this is what `govc` itself requires/produces for a boolean property)
+  does it run `/sbin/zbox-zboxtui-setup.sh --enable` on first boot, before switching
+  consoles. Any other value (including unset/`false`) does nothing — the image already
+  ships in the disabled state, so there is no first-boot work to do.
+- Set the "Enable zBoxTUI Console" property to `True` at OVF deployment time to wire
+  the dashboard onto tty1; leave it unset/`false` to keep the standard login shell.
 
 ## Packer
 
 1. Provisions `files/zbox-zboxtui-setup.sh` → `/sbin/`
-2. `scripts/zbox-system.sh` runs `/sbin/zbox-zboxtui-setup.sh --enable`
+2. `scripts/zbox-system.sh` runs `/sbin/zbox-zboxtui-setup.sh --install` (bakes the
+   software into the image; console wiring is decided at first boot by `zbox-init.sh`,
+   above)
 
 Override clone source at build time:
 

@@ -53,6 +53,6 @@ curl -s https://api.github.com/repos/twpayne/chezmoi/releases/latest \
 && dpkg -i chezmoi_*_linux_amd64.deb && rm chezmoi_*_linux_amd64.deb
 
 echo '> Configuring zBox console + zBoxTUI...'
-/sbin/zbox-zboxtui-setup.sh --enable
+/sbin/zbox-zboxtui-setup.sh --install
 
 echo '> Done'

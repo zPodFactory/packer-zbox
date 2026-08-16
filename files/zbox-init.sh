@@ -96,6 +96,7 @@ appliance_config_ovf_settings() {
     OVF_NETPREFIX=$(echo "$FIRST_PROP_SECTION" | sed -n 's/.*Property oe:key="guestinfo.netprefix" oe:value="\([^"]*\).*/\1/p')
     OVF_PASSWORD=$(echo "$FIRST_PROP_SECTION" | sed -n 's/.*Property oe:key="guestinfo.password" oe:value="\([^"]*\).*/\1/p')
     OVF_SSHKEY=$(echo "$FIRST_PROP_SECTION" | sed -n 's/.*Property oe:key="guestinfo.sshkey" oe:value="\([^"]*\).*/\1/p')
+    OVF_ZBOXTUI=$(echo "$FIRST_PROP_SECTION" | sed -n 's/.*Property oe:key="guestinfo.zboxtui" oe:value="\([^"]*\).*/\1/p')
 
     # Check for cloud-init configuration conflict using direct vmtoolsd queries
     OVF_METADATA=$(vmtoolsd --cmd 'info-get guestinfo.metadata' 2>/dev/null)
@@ -127,6 +128,7 @@ appliance_config_ovf_settings() {
         # Disable cloud-init
         touch /etc/cloud/cloud-init.disabled
 
+        appliance_config_zboxtui
         appliance_config_console
 
         # Clean up temporary file before exiting
@@ -144,7 +146,19 @@ appliance_config_ovf_settings() {
         log "Network: $OVF_IPADDRESS/$OVF_NETPREFIX"
         log "Gateway: $OVF_GATEWAY"
         log "SSH Key: $OVF_SSHKEY"
+        log "ZBOX TUI: $OVF_ZBOXTUI"
         log "=========================================="
+    fi
+}
+
+
+# Function to enable zBoxTUI on the physical console (tty1).
+# The appliance ships with zBoxTUI installed but not wired to any console (stock getty
+# everywhere); only when the OVF property is explicitly "True" do we wire it up here.
+appliance_config_zboxtui() {
+    if [[ "$OVF_ZBOXTUI" == "True" ]]; then
+        log "zBoxTUI enabled via OVF property."
+        /sbin/zbox-zboxtui-setup.sh --enable | tee -a $ZBOX_CONFIG_FILE
     fi
 }
 
@@ -366,6 +380,7 @@ main() {
     appliance_config_storage
     appliance_config_credentials
     appliance_config_user
+    appliance_config_zboxtui
     appliance_config_console
 
     # Clean up temporary files

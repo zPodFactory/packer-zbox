@@ -39,6 +39,7 @@ ZBOXTUI_GIT_REF="${ZBOXTUI_GIT_REF:-main}"
 
 DO_ENABLE=0
 DO_DISABLE=0
+DO_INSTALL=0
 SKIP_KMSCON_RESTART=0
 
 # font metadata (resolve_font)
@@ -54,7 +55,8 @@ usage() {
   cat <<'EOF'
 zbox-zboxtui-setup — kmscon on tty1+tty2, zBoxTUI autostart on tty1
 
-  --enable              Install kmscon, pip-install zBoxTUI from git, wire consoles
+  --install             Install kmscon + zBoxTUI (venv, fonts); console left on stock getty
+  --enable              Ensure installed, then wire tty1 (zBoxTUI) + tty2 (kmscon shell)
   --disable             Revert to agetty, remove zBoxTUI/kmscon config, apt purge kmscon
 
   --font NAME           fira (default), hack, jetbrains, meslo, cascadia, dejavu, ubuntu
@@ -70,6 +72,7 @@ parse_args() {
     case "$1" in
       --enable) DO_ENABLE=1 ;;
       --disable) DO_DISABLE=1 ;;
+      --install) DO_INSTALL=1 ;;
       --font=*) NERD_FONT="${1#*=}" ;;
       --font) shift; [[ $# -gt 0 ]] || die "--font needs a value"; NERD_FONT="$1" ;;
       --palette=*) PALETTE="${1#*=}" ;;
@@ -77,12 +80,12 @@ parse_args() {
       --font-size=*) FONT_SIZE="${1#*=}" ;;
       --font-size) shift; [[ $# -gt 0 ]] || die "--font-size needs a value"; FONT_SIZE="$1" ;;
       -h|--help) usage; exit 0 ;;
-      *) die "unknown option: $1 (use --enable or --disable)" ;;
+      *) die "unknown option: $1 (use --install, --enable or --disable)" ;;
     esac
     shift
   done
   [[ "$(id -u)" -eq 0 ]] || die "run as root"
-  [[ "$DO_ENABLE" -ne "$DO_DISABLE" ]] || die "specify exactly one of --enable or --disable"
+  [[ "$((DO_ENABLE + DO_DISABLE + DO_INSTALL))" -eq 1 ]] || die "specify exactly one of --install, --enable or --disable"
 }
 
 codename() {
@@ -463,24 +466,27 @@ restore_getty_all() {
   systemctl daemon-reload
 }
 
-cmd_enable() {
-  log "=== enable: kmscon ${TTY_ZBOXTUI}+${TTY_KMSCON}, zBoxTUI on ${TTY_ZBOXTUI} ==="
+# True once the software (kmscon + zBoxTUI venv) is present, regardless of console wiring.
+software_installed() {
+  [[ -x "$ZBOXTUI_BIN" ]] && command -v kmscon >/dev/null 2>&1
+}
+
+# Installs kmscon + zBoxTUI (apt, fonts, git clone, venv). Does not touch console wiring.
+install_software() {
   log "font=${NERD_FONT} size=${FONT_SIZE} palette=${PALETTE}"
 
   resolve_font "$NERD_FONT"
   ensure_backports
   install_apt_base
   command -v kmscon >/dev/null 2>&1 || install_kmscon_pkg
+  # Undo kmscon package's own "all VTs" autovt default; getty stays in charge
+  # of every VT until an explicit --enable wires tty1/tty2.
+  prepare_kmscon_systemd
   install_nerd_font
 
   local font_name
   font_name="$(detect_font_name)"
   write_kmscon_conf "$font_name"
-
-  prepare_kmscon_systemd
-  enable_kmscon_tty "$TTY_KMSCON" 0
-  enable_kmscon_tty "$TTY_ZBOXTUI" 1
-  systemctl daemon-reload
 
   fetch_zboxtui
   install_zboxtui_venv "$BUILD_DIR"
@@ -488,12 +494,42 @@ cmd_enable() {
   install_console_wrappers
   append_zboxtui_kmscon_snippet
   install_profile_colorterm
-  write_boot_vt
-
-  restart_kmscon_sessions
 
   log "Removing build tree ${BUILD_DIR}"
   rm -rf "$BUILD_DIR"
+}
+
+# Wires tty1 (zBoxTUI) + tty2 (kmscon shell); assumes the software is already installed.
+wire_console() {
+  prepare_kmscon_systemd
+  enable_kmscon_tty "$TTY_KMSCON" 0
+  enable_kmscon_tty "$TTY_ZBOXTUI" 1
+  systemctl daemon-reload
+  write_boot_vt
+  restart_kmscon_sessions
+}
+
+cmd_install() {
+  log "=== install: kmscon + zBoxTUI software (console left on stock getty) ==="
+  if software_installed; then
+    log "Already installed; nothing to do."
+  else
+    install_software
+  fi
+  log "Done. Console left on stock getty."
+  echo "  Enable:   sudo /sbin/zbox-zboxtui-setup.sh --enable"
+}
+
+cmd_enable() {
+  log "=== enable: kmscon ${TTY_ZBOXTUI}+${TTY_KMSCON}, zBoxTUI on ${TTY_ZBOXTUI} ==="
+
+  if software_installed; then
+    log "zBoxTUI + kmscon already installed; wiring consoles only"
+  else
+    install_software
+  fi
+
+  wire_console
 
   log "Done."
   echo "  zBoxTUI:  Ctrl+Alt+F1 (${TTY_ZBOXTUI})"
@@ -524,7 +560,9 @@ cmd_disable() {
 # --- main ---
 parse_args "$@"
 
-if [[ "$DO_ENABLE" -eq 1 ]]; then
+if [[ "$DO_INSTALL" -eq 1 ]]; then
+  cmd_install
+elif [[ "$DO_ENABLE" -eq 1 ]]; then
   cmd_enable
 else
   cmd_disable
