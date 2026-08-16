@@ -56,7 +56,8 @@
       "ethernet0.virtualDev": "vmxnet3",
       "ethernet0.wakeOnPcktRcv": "FALSE",
       "memsize": "{{ user `ramsize` }}",
-      "numvcpus": "{{ user `numvcpus` }}"
+      "numvcpus": "{{ user `numvcpus` }}",
+      "scsi0.virtualDev": "pvscsi"
     },
     "vnc_disable_password": true
   }],
