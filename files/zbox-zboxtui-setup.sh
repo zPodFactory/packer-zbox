@@ -488,8 +488,15 @@ restore_getty_all() {
       "/etc/systemd/system/kmsconvt@${tty}.service.d/kmscon-color.conf"
     rmdir "/etc/systemd/system/kmsconvt@${tty}.service.d" 2>/dev/null || true
     systemctl unmask "getty@${tty}.service" 2>/dev/null || true
-    systemctl enable "getty@${tty}.service" 2>/dev/null || true
-    systemctl restart "getty@${tty}.service" 2>/dev/null || true
+    if [[ "$tty" == "tty1" ]]; then
+      # Stock Debian statically enables only tty1; leave it running.
+      systemctl enable "getty@${tty}.service" 2>/dev/null || true
+      systemctl restart "getty@${tty}.service" 2>/dev/null || true
+    else
+      # Stock Debian leaves tty2-6 disabled/inactive; autovt starts them on demand.
+      systemctl disable "getty@${tty}.service" 2>/dev/null || true
+      systemctl stop "getty@${tty}.service" 2>/dev/null || true
+    fi
   done
   systemctl daemon-reload
 }
