@@ -1,2 +1,11 @@
 # Ignore builder configuration file containing sensitive information
 zbox-builder.json
+
+# Local analysis/scratch reports
+docs/
+
+# Packer build output (multi-GB OVA artifacts)
+output-*/
+
+# Local Claude Code session settings
+.claude/

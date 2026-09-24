@@ -13,7 +13,7 @@ packer-zbox is a Packer-based project that builds a customized Debian Linux VM a
 ./build-zbox.sh
 
 # The build script runs:
-# packer build --var-file="zbox-builder.json" --var-file="zbox-13.6.json" zbox.json
+# packer build --var-file="zbox-builder.json" --var-file="zbox-13.7.json" zbox.json
 ```
 
 **Prerequisites:**
@@ -25,7 +25,7 @@ packer-zbox is a Packer-based project that builds a customized Debian Linux VM a
 ### Packer Configuration
 
 - `zbox.json` - Main Packer template defining the VMware ISO builder, provisioners, and post-processors
-- `zbox-X.Y.json` - Version-specific variables (Debian version, ISO URL, checksums); current build uses **`zbox-13.6.json`**
+- `zbox-X.Y.json` - Version-specific variables (Debian version, ISO URL, checksums); current build uses **`zbox-13.7.json`**
 - `zbox-builder.json` - Builder environment config (ESXi host, credentials, datastore)
 
 ### Build Flow
@@ -34,9 +34,9 @@ packer-zbox is a Packer-based project that builds a customized Debian Linux VM a
 2. **Provisioning**: Runs shell scripts from `scripts/` in order:
    - `zbox-update.sh` - apt update and upgrade to latest packages
    - `zbox-apt.sh` - Adds third-party repos (Docker, Hashicorp, Kubernetes, Tailscale, Netbird, Cloudflare Tunnel)
-   - `zbox-system.sh` - Installs system utilities (jq, bat, eza, fzf, ripgrep, htop, btop, fx, etc.), cloud-init, and **`/sbin/zbox-zboxtui-setup.sh --enable`**
-   - `zbox-network.sh` - Installs network utilities (gping, doggo, tcpdump, wireguard, wakey, snitch, witr, ttl, xfr, surge, etc.)
-   - `zbox-storage.sh` - Installs storage utilities (gdu, lftp, pure-ftpd, nfs-kernel-server, cull)
+   - `zbox-system.sh` - Installs system utilities (jq, bat, duf, eza, fzf, ripgrep, htop, fx, chezmoi, etc.), cloud-init, and **`/sbin/zbox-zboxtui-setup.sh --install`**
+   - `zbox-network.sh` - Installs network utilities (gping, doggo, tcpdump, wireguard, snitch, witr, ttl, xfr, surge, etc.)
+   - `zbox-storage.sh` - Installs storage utilities (lftp, cull)
    - `zbox-settings.sh` - Configures DNS resolver, IP forwarding, SSH banner, and enables zbox-init service
    - `zbox-shell.sh` - Installs zsh, oh-my-zsh, oh-my-posh, tmux with catppuccin, zoxide, atuin
    - `zbox-vmware.sh` - Installs open-vm-tools and cloud-guest-utils, disables guest customization

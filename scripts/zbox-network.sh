@@ -29,12 +29,6 @@ apt-get install -y \
 curl -sS https://raw.githubusercontent.com/mr-karan/doggo/main/install.sh | /bin/sh && chown root:root /usr/local/bin/doggo
 
 #
-# Install wakey (wake on lan cli tool)
-# https://github.com/jonathanruiz/wakey
-#
-wget -qO /usr/local/bin/wakey https://github.com/jonathanruiz/wakey/releases/latest/download/wakey_linux_amd64 && chmod +x /usr/local/bin/wakey
-
-#
 # Install snitch (a prettier way to inspect network connections)
 # https://github.com/karol-broda/snitch
 #

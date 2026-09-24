@@ -16,12 +16,10 @@ apt-get install -y \
   git \
   man \
   vim \
-  btop \
   ccze \
   file \
   htop \
   make \
-  mise \
   tmux \
   tree \
   bzip2 \
