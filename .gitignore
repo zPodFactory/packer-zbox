@@ -9,3 +9,10 @@ output-*/
 
 # Local Claude Code session settings
 .claude/
+
+# Local list of strings that must never enter the history (tools/release.py --check)
+.release-denylist
+
+# Local OVA test helpers (carry a lab address and a password)
+test-zbox.sh
+test-zbox.json

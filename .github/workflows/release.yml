@@ -1,0 +1,59 @@
+name: release
+
+# A tag is not a release note. Pushing `v0.2.5` alone leaves the Releases tab showing a
+# version number with nothing under it, while the changelog for that version sits in the
+# repository, written. So this reads the section `CHANGELOG.md` already has and publishes
+# it as the body of the release, after checking that the tag, the changelog and the shipped
+# version agree.
+#
+# Here rather than only as a local command, because the rule is "every tag gets its notes"
+# and a rule that depends on somebody remembering a second command holds until the first
+# hurried release. Identical in every zPodFactory repository; what differs lives in the
+# configuration block at the top of tools/release.py and tools/release_notes.py.
+on:
+  push:
+    tags: ["v*"]
+  # For fixing a release note after the fact, or backfilling tags that predate this.
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version to (re)publish, e.g. 0.3.0; blank means every tag"
+        required: false
+        default: ""
+
+permissions:
+  contents: write          # creating and editing a release is a write to the repository
+
+jobs:
+  notes:
+    name: publish the changelog section
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # The note ends with a compare link against the previous tag, which needs the
+          # tags; a default checkout fetches none of them.
+          fetch-depth: 0
+          fetch-tags: true
+      # No uv, no dependency tree: both tools are standard library only.
+      - name: check
+        run: |
+          python3 tools/release.py --check
+          python3 tools/release_notes.py --check
+      - name: publish
+        env:
+          GH_TOKEN: ${{ github.token }}
+          # Through the environment rather than interpolated into the script, so an input
+          # cannot become shell.
+          VERSION: ${{ inputs.version }}
+          EVENT: ${{ github.event_name }}
+          TAG: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+          if [ "$EVENT" = "push" ]; then
+            python3 tools/release_notes.py "${TAG#v}" --publish
+          elif [ -n "$VERSION" ]; then
+            python3 tools/release_notes.py "$VERSION" --publish
+          else
+            python3 tools/release_notes.py --all --publish
+          fi

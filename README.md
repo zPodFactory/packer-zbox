@@ -23,6 +23,9 @@ Latest builds are available here:
 - https://cloud.tsugliani.fr/ova/zbox-13.6.ova 
 - https://cloud.tsugliani.fr/ova/zbox-13.7.ova 
 
+What changed in each version: [GitHub releases](https://github.com/zPodFactory/packer-zbox/releases)
+(one per Debian point release, `v13.7` is the zBox built on Debian 13.7) or [CHANGELOG.md](CHANGELOG.md).
+
 
 ## Deployment examples
 
