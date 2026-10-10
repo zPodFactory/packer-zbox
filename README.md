@@ -261,9 +261,10 @@ Then you can build the appliance using the provided `build-zbox.sh` script.
 ```bash
 ./build-zbox.sh
 ```
-This should take around 15 minutes to build the appliance. The OVA is written to
-`output-zbox-<version>/` (for example `output-zbox-13.7/zbox-13.7.ova` when using
-`zbox-13.7.json`).
+This should take around 15 minutes to build the appliance. The OVA is named after
+`APPLIANCE_VERSION` in `build-zbox.sh`, not after the var file: `13.7` is written to
+`output-zbox-13.7/zbox-13.7.ova`, and a respin `13.7.1` of the same Debian release — still
+built from `zbox-13.7.json` — to `output-zbox-13.7.1/zbox-13.7.1.ova`.
 
 ```bash
 ls -l output-zbox-13.7/*.ova

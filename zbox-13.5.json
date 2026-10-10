@@ -3,7 +3,6 @@
     "author": "Timo Sugliani",
     "website": "https://github.com/zPodFactory",
     "description": "zBox Appliance",
-    "vm_name": "zbox-13.5",
     "hostname": "zbox",
     "numvcpus": "2",
     "ramsize": "4096",

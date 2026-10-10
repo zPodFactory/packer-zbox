@@ -32,6 +32,12 @@ tag, a var file that does not exist yet, and any string from the local `.release
   `tools/README.md` explains the release in a page. The tag is created by the cut, on the
   workstation, never by a workflow.
 
+- **The OVA is named after the release, not the Debian point release.** The appliance version
+  moved out of the var file into `APPLIANCE_VERSION` in `build-zbox.sh`, which packer takes as
+  `appliance_version` and uses for the VM, the output directory and the OVA; the var file keeps
+  only the Debian facts. A respin of the same Debian release now publishes its own
+  `zbox-13.7.1.ova` instead of overwriting `zbox-13.7.ova`.
+
 ### Fixed
 
 - **syslog-ng runs at boot.** Debian 13's `syslog-ng-core` package registers only its sysvinit

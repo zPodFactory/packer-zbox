@@ -55,7 +55,9 @@ VERSION_PATTERN = r'--var-file="?zbox-(\d+\.\d+)\.json"?'   # one capture group:
 VERSION_SHAPE = r"\d+\.\d+(\.\d+)?"                 # what a version looks like here
 VERSION_IN_FILE = "{major_minor}"             # what is written into VERSION_FILE
 REQUIRED_FILES: tuple[str, ...] = ('zbox-{major_minor}.json',)             # must exist before a cut; {version} {major_minor}
-ALSO_UPDATE: dict[str, str] = {}                 # other files: path -> regex with one group
+ALSO_UPDATE: dict[str, str] = {                  # other files: path -> regex with one group
+    "build-zbox.sh": r'APPLIANCE_VERSION="([^"]+)"',   # the full version, incl. a respin digit
+}
 TEST_COMMAND: tuple[str, ...] = ()   # () when there is no suite
 MUST_STAY_LOCAL = r"(^|/)\.env$|\.log$"
 # ─────────────────────────────────────────────────────────────────────────────────────

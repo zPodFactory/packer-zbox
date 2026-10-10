@@ -1,4 +1,7 @@
 {
+  "variables": {
+    "appliance_version": null
+  },
   "builders": [{
     "boot_command": [
       "<esc><wait>",
@@ -28,7 +31,7 @@
     "http_directory": "http",
     "iso_checksum": "{{ user `iso_checksum_type` }}:{{ user `iso_checksum` }}",
     "iso_url": "{{ user `iso_url` }}",
-    "name": "{{ user `vm_name` }}",
+    "name": "zbox-{{ user `appliance_version` }}",
     "ovftool_options": "--noImageFiles",
     "remote_datastore": "{{ user `builder_host_datastore` }}",
     "remote_host": "{{ user `builder_host` }}",
@@ -46,8 +49,8 @@
     "ssh_username": "{{ user `guest_username` }}",
     "type": "vmware-iso",
     "version": 14,
-    "vm_name": "{{ user `vm_name` }}",
-    "vmdk_name": "{{ user `vm_name` }}-disk0",
+    "vm_name": "zbox-{{ user `appliance_version` }}",
+    "vmdk_name": "zbox-{{ user `appliance_version` }}-disk0",
     "vmx_data": {
       "ethernet0.addressType": "generated",
       "ethernet0.networkName": "{{ user `builder_host_portgroup` }}",
@@ -63,9 +66,8 @@
   }],
   "post-processors": [{
     "environment_vars": [
-      "APPLIANCE_NAME={{ user `vm_name` }}",
-      "APPLIANCE_VERSION={{ user `version` }}",
-      "APPLIANCE_OVA={{ user `vm_name` }}_{{user `version`}}"
+      "APPLIANCE_NAME=zbox-{{ user `appliance_version` }}",
+      "APPLIANCE_VERSION={{ user `appliance_version` }}"
     ],
     "inline": [
       "cd postprocess-ova-properties",

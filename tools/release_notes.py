@@ -80,10 +80,10 @@ def facts(version: str) -> str:
     lead = f"{name} appliance built on **Debian {debian}**" + (f" ({codename})." if codename else ".")
     rows = [
         "| | |", "|---|---|",
-        f"| OVA | {OVA_BASE_URL}/{APPLIANCE}-{debian}.ova |",
+        f"| OVA | {OVA_BASE_URL}/{APPLIANCE}-{version}.ova |",
         f"| Debian ISO | [{Path(iso).name}]({iso}) |" if iso else "",
         f"| ISO sha256 | `{vars_.get('iso_checksum', '')}` |",
-        f"| Build | `packer build --var-file={APPLIANCE}-builder.json --var-file={APPLIANCE}-{debian}.json {APPLIANCE}.json` |",
+        f"| Build | `packer build --var-file={APPLIANCE}-builder.json --var-file={APPLIANCE}-{debian}.json --var appliance_version={version} {APPLIANCE}.json` |",
     ]
     return lead + "\n\n" + "\n".join(r for r in rows if r)
 # ─────────────────────────────────────────────────────────────────────────────────────
