@@ -287,7 +287,10 @@ session-max=12
 session-control
 switchvt
 mouse
-hwaccel
+# Software renderer: with hwaccel the GL glyph upload fails on the VMware vmwgfx
+# GPU (text_gltex ... INVALID_OPERATION) at ~40k warnings/s, flooding the journal
+# and syslog and pinning kmscon at 100% CPU.
+no-hwaccel
 drm
 gpus=all
 ${CONSOLE_MARKER_END}

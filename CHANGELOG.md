@@ -32,6 +32,16 @@ tag, a var file that does not exist yet, and any string from the local `.release
   `tools/README.md` explains the release in a page. The tag is created by the cut, on the
   workstation, never by a workflow.
 
+### Fixed
+
+- **syslog-ng runs at boot.** Debian 13's `syslog-ng-core` package registers only its sysvinit
+  script and never enables the systemd unit, so the appliance came up with the unit
+  `disabled` and no `/var/log/syslog`. The system script now enables it explicitly.
+- **kmscon uses the software renderer** (`no-hwaccel`). On the VMware virtual GPU the GL
+  renderer fails every glyph upload and floods syslog and the journal with `text_gltex`
+  warnings (~40k/s) while burning a CPU. Existing appliances: set `no-hwaccel` in
+  `/etc/kmscon/kmscon.conf` and restart `kmsconvt@tty1` and `kmsconvt@tty2`.
+
 ## [13.7] — 2026-09-24
 
 ### Added

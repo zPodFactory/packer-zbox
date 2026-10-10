@@ -31,6 +31,11 @@ apt-get install -y \
   syslog-ng \
   cloud-init
 
+# Debian's syslog-ng-core postinst only registers the sysvinit script (update-rc.d) and
+# starts the daemon once through invoke-rc.d; it never enables the systemd unit, so the
+# appliance boots with syslog-ng "disabled; preset: enabled" and no /var/log/syslog.
+systemctl enable syslog-ng.service
+
 
 #
 # Install fx (JSON tool)
